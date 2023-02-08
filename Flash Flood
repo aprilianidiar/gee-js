@@ -1,9 +1,33 @@
-// Study Area Boundaries
-var bounds = /* color: #d63000 */ee.Geometry.Polygon(
+/**** Start of imports. If edited, may not auto-convert in the playground. ****/
+var geometry = 
+    /* color: #d63000 */
+    /* shown: false */
+    /* displayProperties: [
+      {
+        "type": "rectangle"
+      }
+    ] */
+    ee.Geometry.Polygon(
+        [[[95.97614595528212, 16.977416614624072],
+          [95.97614595528212, 16.70796856952083],
+          [96.35105440254775, 16.70796856952083],
+          [96.35105440254775, 16.977416614624072]]], null, false),
+    bounds = 
+    /* color: #d63000 */
+    /* shown: false */
+    ee.Geometry.Polygon(
         [[[-94.5214452285728, 30.165244882083663],
           [-94.5214452285728, 29.56024879238989],
           [-93.36650748443218, 29.56024879238989],
           [-93.36650748443218, 30.165244882083663]]], null, false);
+/***** End of imports. If edited, may not auto-convert in the playground. *****/
+//Changing the study area
+// Study Area Boundaries
+var bounds = /* color: #d63000 */ee.Geometry.Polygon(
+        [[[96.35105440254775,16.70796856952083],
+        [96.35105440254775,16.977416614624072],
+        [95.97614595528212,16.977416614624072],
+        [95.97614595528212,16.70796856952083]]], null, false);
 
 
 // [before_start,before_end,after_start,after_end,k_ndfi,k_ri,k_diff,mndwi_threshold]
