@@ -299,38 +299,38 @@ Map.addLayer(clouds_2.updateMask(clouds_2.eq(1)),{palette:'gold'},'shadows [mc]'
 var cloudsMasked = sentinel2_flood_clip.updateMask(clouds_1.eq(0).and(clouds_2.eq(0)));
 
 // Calculating MNDWI for Optical imagery
-var green_s2 = cloudsMasked.select('B3')
-var swir1_s2 = cloudsMasked.select('B11') 
-var swir2_s2 = cloudsMasked.select('B12') 
+var green_s2 = cloudsMasked.select('B3');
+var swir1_s2 = cloudsMasked.select('B11'); 
+var swir2_s2 = cloudsMasked.select('B12');
 
-var mndwi_s2 = green_s2.subtract(swir1_s2).divide(green_s2.add(swir1_s2)).rename('mndwi_s2')
+var mndwi_s2 = green_s2.subtract(swir1_s2).divide(green_s2.add(swir1_s2)).rename('mndwi_s2');
 
-var mndwi_masked = mndwi_s2.where(swater_mask, 0)
-Map.addLayer(mndwi_masked,{min:-0.5446808338165283,max:0.9092437028884888,palette:['02991c','37a3ff','ff822a']},'mndwi_masked',0)
+var mndwi_masked = mndwi_s2.where(swater_mask, 0);
+Map.addLayer(mndwi_masked,{min:-0.5446808338165283,max:0.9092437028884888,palette:['02991c','37a3ff','ff822a']},'mndwi_masked',0);
 
-var mndwi_filtered = mndwi_masked.gt(mndwi_threshold)
-var mndwi_connections = mndwi_filtered.connectedPixelCount().gte(25)
-mndwi_filtered = mndwi_filtered.updateMask(mndwi_connections.eq(1))
+var mndwi_filtered = mndwi_masked.gt(mndwi_threshold);
+var mndwi_connections = mndwi_filtered.connectedPixelCount().gte(25);
+mndwi_filtered = mndwi_filtered.updateMask(mndwi_connections.eq(1));
 
-var mndwi_flood = mndwi_filtered.updateMask(mndwi_filtered.eq(1))
+var mndwi_flood = mndwi_filtered.updateMask(mndwi_filtered.eq(1));
 
 // Dispaly -----------------------------------
-Map.addLayer(ndfi_flood, {palette: 'red'}, 'ndfi_flood',0)
-Map.addLayer(ri_flood, {palette: '00bee9'}, "ri_flood",0)
-Map.addLayer(diff_image_flood, {palette: 'brown'}, "diff_image_flood",0)
-Map.addLayer(mndwi_flood, {palette: 'ff822a'}, "mndwi_flood", 0)
-Map.addLayer(swater_clip, {palette: ['20cbdc']}, "Open Waters", 0)
-Map.setOptions('HYBRID')
-Map.centerObject(bounds)
+Map.addLayer(ndfi_flood, {palette: 'red'}, 'ndfi_flood',0);
+Map.addLayer(ri_flood, {palette: '00bee9'}, "ri_flood",0);
+Map.addLayer(diff_image_flood, {palette: 'brown'}, "diff_image_flood",0);
+Map.addLayer(mndwi_flood, {palette: 'ff822a'}, "mndwi_flood", 0);
+Map.addLayer(swater_clip, {palette: ['20cbdc']}, "Open Waters", 0);
+Map.setOptions('HYBRID');
+Map.centerObject(bounds);
 
 // NDFI Pixel Analysis -----------------------------------
 // Removing Cloud Covers and Cloud Shadows from NDFI flood inundation layers
-var ndfi_flood_RemCloud = ndfi_flood.updateMask(clouds_1.eq(0).and(clouds_2.eq(0)))
+var ndfi_flood_RemCloud = ndfi_flood.updateMask(clouds_1.eq(0).and(clouds_2.eq(0)));
 
 var undcldfld_ndfi = ndfi_flood_RemCloud.mask().clip(bounds)
   .add(ndfi_flood.mask().remap([0,1],[0,5]))
-  .rename('flood_compare')
-undcldfld_ndfi = undcldfld_ndfi.remap([0,1,3,5,6,8,9],[0,1,2,3,4,5,6])
+  .rename('flood_compare');
+undcldfld_ndfi = undcldfld_ndfi.remap([0,1,3,5,6,8,9],[0,1,2,3,4,5,6]);
 undcldfld_ndfi = undcldfld_ndfi.updateMask(undcldfld_ndfi.gt(0));
 
 var undcldfld_ndfi_pixels = ndfi_flood.updateMask(undcldfld_ndfi.eq(3));
@@ -342,19 +342,19 @@ var num_undcldfld_ndfi_pixels = undcldfld_ndfi_pixels.reduceRegion({
   bestEffort: true
   });
 
-Map.addLayer(undcldfld_ndfi_pixels,{palette:['ceff0c']},'undcldfld_ndfi')
-print("num_undcldfld_ndfi_pixels", num_undcldfld_ndfi_pixels)
+Map.addLayer(undcldfld_ndfi_pixels,{palette:['ceff0c']},'undcldfld_ndfi');
+print("num_undcldfld_ndfi_pixels", num_undcldfld_ndfi_pixels);
 
 var compare_ndfi = ndfi_flood_RemCloud.mask().clip(bounds)
   .add(mndwi_flood.mask().remap([0,1],[0,5]))
-  .rename('flood_compare')
-compare_ndfi = compare_ndfi.remap([0,1,3,5,6,8,9],[0,1,2,3,4,5,6])
+  .rename('flood_compare');
+compare_ndfi = compare_ndfi.remap([0,1,3,5,6,8,9],[0,1,2,3,4,5,6]);
 compare_ndfi = compare_ndfi.updateMask(compare_ndfi.gt(0));
-Map.addLayer(compare_ndfi,{min:0,max:4,palette:['dadada','0400ff','ff0000','fbff00']},'compare_ndfiANDmndwi')
+Map.addLayer(compare_ndfi,{min:0,max:4,palette:['dadada','0400ff','ff0000','fbff00']},'compare_ndfiANDmndwi');
 
 var mndwi_pixels = mndwi_flood.updateMask(compare_ndfi.eq(3));
 
-Map.addLayer(mndwi_pixels,{},'mndwi_pixels')
+Map.addLayer(mndwi_pixels,{},'mndwi_pixels');
 var num_mndwi_pixels = mndwi_pixels.reduceRegion({
   reducer: ee.Reducer.sum(),              
   geometry: bounds,
@@ -362,10 +362,10 @@ var num_mndwi_pixels = mndwi_pixels.reduceRegion({
   //maxPixels: 1e9,
   bestEffort: true
   });
-print("num_mndwi_pixels", num_mndwi_pixels)
+print("num_mndwi_pixels", num_mndwi_pixels);
 
 var ndfi_pixels = ndfi_flood_RemCloud.updateMask(compare_ndfi.eq(1));
-Map.addLayer(ndfi_pixels,{},'ndfi_pixels')
+Map.addLayer(ndfi_pixels,{},'ndfi_pixels');
 var num_ndfi_pixels = ndfi_pixels.reduceRegion({
   reducer: ee.Reducer.sum(),              
   geometry: bounds,
@@ -373,11 +373,11 @@ var num_ndfi_pixels = ndfi_pixels.reduceRegion({
   //maxPixels: 1e9,
   bestEffort: true
   });
-print("num_ndfi_pixels", num_ndfi_pixels)
+print("num_ndfi_pixels", num_ndfi_pixels);
 
 var ndfiAndmndwi_pixels = ndfi_flood_RemCloud.updateMask(mndwi_flood);
 
-Map.addLayer(ndfiAndmndwi_pixels,{},'ndfiAndmndwi_pixels')
+Map.addLayer(ndfiAndmndwi_pixels,{},'ndfiAndmndwi_pixels');
 var num_ndfiAndmndwi_pixels = ndfiAndmndwi_pixels.reduceRegion({
   reducer: ee.Reducer.sum(),              
   geometry: bounds,
@@ -385,23 +385,26 @@ var num_ndfiAndmndwi_pixels = ndfiAndmndwi_pixels.reduceRegion({
   //maxPixels: 1e9,
   bestEffort: true
   });
-print("num_ndfiAndmndwi_pixels", num_ndfiAndmndwi_pixels)
+print("num_ndfiAndmndwi_pixels", num_ndfiAndmndwi_pixels);
 
-var ToAgre_Percent_ndfi = ee.Number(num_ndfiAndmndwi_pixels.get('VH')).divide(ee.Number(num_ndfiAndmndwi_pixels.get('VH')).add(ee.Number(num_ndfi_pixels.get('VH')).add(ee.Number(num_mndwi_pixels.get('mndwi_s2')))))
-print("Total Agreement % NDFI", ToAgre_Percent_ndfi)
+var ToAgre_Percent_ndfi = ee.Number(num_ndfiAndmndwi_pixels.get('VH'))
+.divide(ee.Number(num_ndfiAndmndwi_pixels.get('VH')).add(ee.Number(num_ndfi_pixels.get('VH'))
+.add(ee.Number(num_mndwi_pixels.get('mndwi_s2')))));
+print("Total Agreement % NDFI", ToAgre_Percent_ndfi);
 
-var Agr_Percentage_ndfi = ee.Number(num_ndfiAndmndwi_pixels.get("VH")).divide(ee.Number(num_mndwi_pixels.get("mndwi_s2")).add(ee.Number(num_ndfiAndmndwi_pixels.get("VH"))))
-print("Agreement % NDFI = ", Agr_Percentage_ndfi)
+var Agr_Percentage_ndfi = ee.Number(num_ndfiAndmndwi_pixels.get("VH"))
+.divide(ee.Number(num_mndwi_pixels.get("mndwi_s2")).add(ee.Number(num_ndfiAndmndwi_pixels.get("VH"))));
+print("Agreement % NDFI = ", Agr_Percentage_ndfi);
 
 
 // RI Pixel Analysis -----------------------------------
 // Removing Cloud Covers and Cloud Shadows from RI flood inundation layers
-var ri_flood_RemCloud = ri_flood.updateMask(clouds_1.eq(0).and(clouds_2.eq(0)))
+var ri_flood_RemCloud = ri_flood.updateMask(clouds_1.eq(0).and(clouds_2.eq(0)));
 
 var undcldfld_ri = ri_flood_RemCloud.mask().clip(bounds)
   .add(ri_flood.mask().remap([0,1],[0,5]))
-  .rename('flood_compare')
-undcldfld_ri = undcldfld_ri.remap([0,1,3,5,6,8,9],[0,1,2,3,4,5,6])
+  .rename('flood_compare');
+undcldfld_ri = undcldfld_ri.remap([0,1,3,5,6,8,9],[0,1,2,3,4,5,6]);
 undcldfld_ri = undcldfld_ri.updateMask(undcldfld_ri.gt(0));
 
 var undcldfld_ri_pixels = ri_flood.updateMask(undcldfld_ri.eq(3));
@@ -413,18 +416,18 @@ var num_undcldfld_ri_pixels = undcldfld_ri_pixels.reduceRegion({
   bestEffort: true
   });
 
-Map.addLayer(undcldfld_ri_pixels,{palette:['fbff00']},'undcldfld_ri')
-print("num_undcldfld_ri_pixels", num_undcldfld_ri_pixels)
+Map.addLayer(undcldfld_ri_pixels,{palette:['fbff00']},'undcldfld_ri');
+print("num_undcldfld_ri_pixels", num_undcldfld_ri_pixels);
 
 var compare_ri = ri_flood_RemCloud.mask().clip(bounds)
   .add(mndwi_flood.mask().remap([0,1],[0,5]))
-  .rename('flood_compare')
-compare_ri = compare_ri.remap([0,1,3,5,6,8,9],[0,1,2,3,4,5,6])
+  .rename('flood_compare');
+compare_ri = compare_ri.remap([0,1,3,5,6,8,9],[0,1,2,3,4,5,6]);
 compare_ri = compare_ri.updateMask(compare_ri.gt(0));
-Map.addLayer(compare_ri,{min:0,max:4,palette:['dadada','0400ff','ff0000','00d0ff']},'compare_riANDmndwi')
+Map.addLayer(compare_ri,{min:0,max:4,palette:['dadada','0400ff','ff0000','00d0ff']},'compare_riANDmndwi');
 
 var ri_mndwi_pixels = mndwi_flood.updateMask(compare_ri.eq(3));
-Map.addLayer(ri_mndwi_pixels,{},'ri_mndwi_pixels')
+Map.addLayer(ri_mndwi_pixels,{},'ri_mndwi_pixels');
 var num_ri_mndwi_pixels = ri_mndwi_pixels.reduceRegion({
   reducer: ee.Reducer.sum(),              
   geometry: bounds,
@@ -432,10 +435,10 @@ var num_ri_mndwi_pixels = ri_mndwi_pixels.reduceRegion({
   //maxPixels: 1e9,
   bestEffort: true
   });
-print("num_ri_mndwi_pixels", num_ri_mndwi_pixels)
+print("num_ri_mndwi_pixels", num_ri_mndwi_pixels);
 
 var ri_pixels = ri_flood_RemCloud.updateMask(compare_ri.eq(1));
-Map.addLayer(ri_pixels,{},'ri_pixels')
+Map.addLayer(ri_pixels,{},'ri_pixels');
 var num_ri_pixels = ri_pixels.reduceRegion({
   reducer: ee.Reducer.sum(),              
   geometry: bounds,
@@ -443,11 +446,11 @@ var num_ri_pixels = ri_pixels.reduceRegion({
   //maxPixels: 1e9,
   bestEffort: true
   });
-print("num_ri_pixels", num_ri_pixels)
+print("num_ri_pixels", num_ri_pixels);
 
 var riAndmndwi_pixels = ri_flood_RemCloud.updateMask(mndwi_flood);
 
-Map.addLayer(riAndmndwi_pixels,{},'riAndmndwi_pixels')
+Map.addLayer(riAndmndwi_pixels,{},'riAndmndwi_pixels');
 var num_riAndmndwi_pixels = riAndmndwi_pixels.reduceRegion({
   reducer: ee.Reducer.sum(),              
   geometry: bounds,
@@ -455,22 +458,25 @@ var num_riAndmndwi_pixels = riAndmndwi_pixels.reduceRegion({
   //maxPixels: 1e9,
   bestEffort: true
   });
-print("num_riAndmndwi_pixels", num_riAndmndwi_pixels)
+print("num_riAndmndwi_pixels", num_riAndmndwi_pixels);
 
-var ToAgre_Percent_ri = ee.Number(num_riAndmndwi_pixels.get('VH')).divide(ee.Number(num_riAndmndwi_pixels.get('VH')).add(ee.Number(num_ri_pixels.get('VH')).add(ee.Number(num_ri_mndwi_pixels.get('mndwi_s2')))))
-print("Total Agreement % RI", ToAgre_Percent_ri)
+var ToAgre_Percent_ri = ee.Number(num_riAndmndwi_pixels.get('VH'))
+.divide(ee.Number(num_riAndmndwi_pixels.get('VH')).add(ee.Number(num_ri_pixels.get('VH'))
+.add(ee.Number(num_ri_mndwi_pixels.get('mndwi_s2')))));
+print("Total Agreement % RI", ToAgre_Percent_ri);
 
-var Agr_Percentage_ri = ee.Number(num_riAndmndwi_pixels.get("VH")).divide(ee.Number(num_ri_mndwi_pixels.get("mndwi_s2")).add(ee.Number(num_riAndmndwi_pixels.get("VH"))))
-print("Agreement % RI = ", Agr_Percentage_ri)
+var Agr_Percentage_ri = ee.Number(num_riAndmndwi_pixels.get("VH"))
+.divide(ee.Number(num_ri_mndwi_pixels.get("mndwi_s2")).add(ee.Number(num_riAndmndwi_pixels.get("VH"))));
+print("Agreement % RI = ", Agr_Percentage_ri);
 
 // DII Pixel Analysis -----------------------------------
 // Removing Cloud Covers and Cloud Shadows from DII flood inundation layers
-var diff_flood_RemCloud = diff_image_flood.updateMask(clouds_1.eq(0).and(clouds_2.eq(0)))
+var diff_flood_RemCloud = diff_image_flood.updateMask(clouds_1.eq(0).and(clouds_2.eq(0)));
 
 var undcldfld_diff = diff_flood_RemCloud.mask().clip(bounds)
   .add(diff_image_flood.mask().remap([0,1],[0,5]))
-  .rename('flood_compare')
-undcldfld_diff = undcldfld_diff.remap([0,1,3,5,6,8,9],[0,1,2,3,4,5,6])
+  .rename('flood_compare');
+undcldfld_diff = undcldfld_diff.remap([0,1,3,5,6,8,9],[0,1,2,3,4,5,6]);
 undcldfld_diff = undcldfld_diff.updateMask(undcldfld_diff.gt(0));
 
 var undcldfld_diff_pixels = diff_image_flood.updateMask(undcldfld_diff.eq(3));
@@ -482,18 +488,18 @@ var num_undcldfld_diff_pixels = undcldfld_diff_pixels.reduceRegion({
   bestEffort: true
   });
 
-Map.addLayer(undcldfld_diff_pixels,{palette:['ceff0c']},'undcldfld_diff_pixels')
-print("num_undcldfld_diff_pixels", num_undcldfld_diff_pixels)
+Map.addLayer(undcldfld_diff_pixels,{palette:['ceff0c']},'undcldfld_diff_pixels');
+print("num_undcldfld_diff_pixels", num_undcldfld_diff_pixels);
 
 var compare_dii = diff_flood_RemCloud.mask().clip(bounds)
   .add(mndwi_flood.mask().remap([0,1],[0,5]))
-  .rename('flood_compare')
-compare_dii = compare_dii.remap([0,1,3,5,6,8,9],[0,1,2,3,4,5,6])
+  .rename('flood_compare');
+compare_dii = compare_dii.remap([0,1,3,5,6,8,9],[0,1,2,3,4,5,6]);
 compare_dii = compare_dii.updateMask(compare_dii.gt(0));
-Map.addLayer(compare_dii,{min:0,max:4,palette:['dadada','0400ff','ff0000','fbff00']},'compare_diiANDmndwi')
+Map.addLayer(compare_dii,{min:0,max:4,palette:['dadada','0400ff','ff0000','fbff00']},'compare_diiANDmndwi');
 
 var dii_mndwi_pixels = mndwi_flood.updateMask(compare_dii.eq(3));
-Map.addLayer(dii_mndwi_pixels,{},'dii_mndwi_pixels')
+Map.addLayer(dii_mndwi_pixels,{},'dii_mndwi_pixels');
 var num_dii_mndwi_pixels = dii_mndwi_pixels.reduceRegion({
   reducer: ee.Reducer.sum(),              
   geometry: bounds,
@@ -501,10 +507,10 @@ var num_dii_mndwi_pixels = dii_mndwi_pixels.reduceRegion({
   //maxPixels: 1e9,
   bestEffort: true
   });
-print("num_dii_mndwi_pixels", num_dii_mndwi_pixels)
+print("num_dii_mndwi_pixels", num_dii_mndwi_pixels);
 
 var dii_pixels = diff_flood_RemCloud.updateMask(compare_dii.eq(1));
-Map.addLayer(dii_pixels,{},'dii_pixels')
+Map.addLayer(dii_pixels,{},'dii_pixels');
 var num_dii_pixels = dii_pixels.reduceRegion({
   reducer: ee.Reducer.sum(),              
   geometry: bounds,
@@ -512,10 +518,10 @@ var num_dii_pixels = dii_pixels.reduceRegion({
   //maxPixels: 1e9,
   bestEffort: true
   });
-print("num_dii_pixels", num_dii_pixels)
+print("num_dii_pixels", num_dii_pixels);
 
 var diiAndmndwi_pixels = diff_flood_RemCloud.updateMask(mndwi_flood);
-Map.addLayer(diiAndmndwi_pixels,{},'diiAndmndwi_pixels')
+Map.addLayer(diiAndmndwi_pixels,{},'diiAndmndwi_pixels');
 var num_diiAndmndwi_pixels = diiAndmndwi_pixels.reduceRegion({
   reducer: ee.Reducer.sum(),              
   geometry: bounds,
@@ -523,13 +529,16 @@ var num_diiAndmndwi_pixels = diiAndmndwi_pixels.reduceRegion({
   //maxPixels: 1e9,
   bestEffort: true
   });
-print("num_diiAndmndwi_pixels", num_diiAndmndwi_pixels)
+print("num_diiAndmndwi_pixels", num_diiAndmndwi_pixels);
 
-var ToAgre_percent_dii = ee.Number(num_diiAndmndwi_pixels.get('VH')).divide(ee.Number(num_diiAndmndwi_pixels.get('VH')).add(ee.Number(num_dii_pixels.get('VH')).add(ee.Number(num_dii_mndwi_pixels.get('mndwi_s2')))))
-print("Total Agreeemnt % DII", ToAgre_percent_dii)
+var ToAgre_percent_dii = ee.Number(num_diiAndmndwi_pixels.get('VH'))
+.divide(ee.Number(num_diiAndmndwi_pixels.get('VH')).add(ee.Number(num_dii_pixels.get('VH'))
+.add(ee.Number(num_dii_mndwi_pixels.get('mndwi_s2')))));
+print("Total Agreeemnt % DII", ToAgre_percent_dii);
 
-var Agr_Percentage_dii = ee.Number(num_diiAndmndwi_pixels.get("VH")).divide(ee.Number(num_dii_mndwi_pixels.get("mndwi_s2")).add(ee.Number(num_diiAndmndwi_pixels.get("VH"))))
-print("Agreement % DII = ", Agr_Percentage_dii)
+var Agr_Percentage_dii = ee.Number(num_diiAndmndwi_pixels.get("VH"))
+.divide(ee.Number(num_dii_mndwi_pixels.get("mndwi_s2")).add(ee.Number(num_diiAndmndwi_pixels.get("VH"))));
+print("Agreement % DII = ", Agr_Percentage_dii);
 
 //------------------------------------------------------------------------
 //Adding Legend -----------------------------------
