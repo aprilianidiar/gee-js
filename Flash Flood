@@ -88,13 +88,13 @@ var ndfi_filtered = ndfi.focal_mean({radius: 50, kernelType: 'circle', units: 'm
 var ndfi_min = ndfi_filtered.reduceRegion({
   reducer: ee.Reducer.min(),
   geometry: bounds,
-  scale: 10,
+  scale: 15,
   maxPixels: 1e13
 });
 var ndfi_max = ndfi_filtered.reduceRegion({
   reducer: ee.Reducer.max(),
   geometry: bounds,
-  scale: 10,
+  scale: 15,
   maxPixels: 1e13
 });
 
@@ -107,7 +107,7 @@ Map.addLayer(ndfi_norm, {min: 0.3862747346632676, max: 0.7632898395906615}, "ndf
 var histogram = ui.Chart.image.histogram({
   image: ndfi_norm,
   region: bounds,
-  scale: 10,
+  scale: 15,
   maxPixels: 1e13
 });
 print("ndfi_norm Histogram", histogram);
@@ -116,14 +116,14 @@ print("ndfi_norm Histogram", histogram);
 var ndfi_mean = ndfi_norm.reduceRegion({
   reducer: ee.Reducer.mean(),
   geometry: bounds,
-  scale: 10,
+  scale: 15,
   maxPixels: 1e13
 });
 
 var ndfi_std = ndfi_norm.reduceRegion({
   reducer: ee.Reducer.stdDev(),
   geometry: bounds,
-  scale: 10,
+  scale: 15,
   maxPixels: 1e13
 });
 
@@ -153,14 +153,14 @@ var ri_filtered = ri.focal_mean({radius: 50, kernelType: 'circle', units: 'meter
 var ri_min = ri_filtered.reduceRegion({
   reducer: ee.Reducer.min(),
   geometry: bounds,
-  scale: 10,
+  scale: 15,
   maxPixels: 1e13
 });
 
 var ri_max = ri_filtered.reduceRegion({
   reducer: ee.Reducer.max(),
   geometry: bounds,
-  scale: 10,
+  scale: 15,
   maxPixels: 1e13
 });
 
@@ -173,7 +173,7 @@ Map.addLayer(ri_norm, {min: 0.02946113630948349, max: 0.14605562985795736}, "ri_
 var histogram = ui.Chart.image.histogram({
   image: ri_norm,
   region: bounds,
-  scale: 10,
+  scale: 15,
   maxPixels: 1e13
 });
 print("ri_norm Histogram", histogram);
@@ -182,14 +182,14 @@ print("ri_norm Histogram", histogram);
 var ri_mean = ri_norm.reduceRegion({
   reducer: ee.Reducer.mean(),
   geometry: bounds,
-  scale: 10,
+  scale: 15,
   maxPixels: 1e13
 });
 
 var ri_std = ri_norm.reduceRegion({
   reducer: ee.Reducer.stdDev(),
   geometry: bounds,
-  scale: 10,
+  scale: 15,
   maxPixels: 1e13
 });
 
@@ -215,14 +215,14 @@ var diff_image_filtered = diff_image.focal_mean({radius: 50, kernelType: 'circle
 var diff_image_min = diff_image_filtered.reduceRegion({
   reducer: ee.Reducer.min(),
   geometry: bounds,
-  scale: 10,
+  scale: 15,
   maxPixels: 1e13
 });
 
 var diff_image_max = diff_image_filtered.reduceRegion({
   reducer: ee.Reducer.max(),
   geometry: bounds,
-  scale: 10,
+  scale: 15,
   maxPixels: 1e13
 });
 
@@ -235,7 +235,7 @@ Map.addLayer(diff_image_norm, {min: 0.1434809241093373, max: 0.7689478379887918}
 var histogram = ui.Chart.image.histogram({
   image: diff_image_norm,
   region: bounds,
-  scale: 10,
+  scale: 15,
   maxPixels: 1e13
 });
 print("diff_image_norm Histogram", histogram);
@@ -244,14 +244,14 @@ print("diff_image_norm Histogram", histogram);
 var diff_image_mean = diff_image_norm.reduceRegion({
   reducer: ee.Reducer.mean(),
   geometry: bounds,
-  scale: 10,
+  scale: 15,
   maxPixels: 1e13
 });
 
 var diff_image_std = diff_image_norm.reduceRegion({
   reducer: ee.Reducer.stdDev(),
   geometry: bounds,
-  scale: 10,
+  scale: 15,
   maxPixels: 1e13
 });
 
@@ -337,7 +337,7 @@ var undcldfld_ndfi_pixels = ndfi_flood.updateMask(undcldfld_ndfi.eq(3));
 var num_undcldfld_ndfi_pixels = undcldfld_ndfi_pixels.reduceRegion({
   reducer: ee.Reducer.sum(),              
   geometry: bounds,
-  scale: 10, // native resolution 
+  scale: 15, // native resolution 
   //maxPixels: 1e9,
   bestEffort: true
   });
@@ -358,7 +358,7 @@ Map.addLayer(mndwi_pixels,{},'mndwi_pixels');
 var num_mndwi_pixels = mndwi_pixels.reduceRegion({
   reducer: ee.Reducer.sum(),              
   geometry: bounds,
-  scale: 10, // native resolution 
+  scale: 15, // native resolution 
   //maxPixels: 1e9,
   bestEffort: true
   });
@@ -369,7 +369,7 @@ Map.addLayer(ndfi_pixels,{},'ndfi_pixels');
 var num_ndfi_pixels = ndfi_pixels.reduceRegion({
   reducer: ee.Reducer.sum(),              
   geometry: bounds,
-  scale: 10, // native resolution 
+  scale: 15, // native resolution 
   //maxPixels: 1e9,
   bestEffort: true
   });
@@ -381,7 +381,7 @@ Map.addLayer(ndfiAndmndwi_pixels,{},'ndfiAndmndwi_pixels');
 var num_ndfiAndmndwi_pixels = ndfiAndmndwi_pixels.reduceRegion({
   reducer: ee.Reducer.sum(),              
   geometry: bounds,
-  scale: 10, // native resolution 
+  scale: 15, // native resolution 
   //maxPixels: 1e9,
   bestEffort: true
   });
@@ -411,7 +411,7 @@ var undcldfld_ri_pixels = ri_flood.updateMask(undcldfld_ri.eq(3));
 var num_undcldfld_ri_pixels = undcldfld_ri_pixels.reduceRegion({
   reducer: ee.Reducer.sum(),              
   geometry: bounds,
-  scale: 10, // native resolution 
+  scale: 15, // native resolution 
   //maxPixels: 1e9,
   bestEffort: true
   });
@@ -431,7 +431,7 @@ Map.addLayer(ri_mndwi_pixels,{},'ri_mndwi_pixels');
 var num_ri_mndwi_pixels = ri_mndwi_pixels.reduceRegion({
   reducer: ee.Reducer.sum(),              
   geometry: bounds,
-  scale: 10, // native resolution 
+  scale: 15, // native resolution 
   //maxPixels: 1e9,
   bestEffort: true
   });
@@ -442,7 +442,7 @@ Map.addLayer(ri_pixels,{},'ri_pixels');
 var num_ri_pixels = ri_pixels.reduceRegion({
   reducer: ee.Reducer.sum(),              
   geometry: bounds,
-  scale: 10, // native resolution 
+  scale: 15, // native resolution 
   //maxPixels: 1e9,
   bestEffort: true
   });
@@ -454,7 +454,7 @@ Map.addLayer(riAndmndwi_pixels,{},'riAndmndwi_pixels');
 var num_riAndmndwi_pixels = riAndmndwi_pixels.reduceRegion({
   reducer: ee.Reducer.sum(),              
   geometry: bounds,
-  scale: 10, // native resolution 
+  scale: 15, // native resolution 
   //maxPixels: 1e9,
   bestEffort: true
   });
@@ -483,7 +483,7 @@ var undcldfld_diff_pixels = diff_image_flood.updateMask(undcldfld_diff.eq(3));
 var num_undcldfld_diff_pixels = undcldfld_diff_pixels.reduceRegion({
   reducer: ee.Reducer.sum(),              
   geometry: bounds,
-  scale: 10, // native resolution 
+  scale: 15, // native resolution 
   //maxPixels: 1e9,
   bestEffort: true
   });
@@ -503,7 +503,7 @@ Map.addLayer(dii_mndwi_pixels,{},'dii_mndwi_pixels');
 var num_dii_mndwi_pixels = dii_mndwi_pixels.reduceRegion({
   reducer: ee.Reducer.sum(),              
   geometry: bounds,
-  scale: 10, // native resolution 
+  scale: 15, // native resolution 
   //maxPixels: 1e9,
   bestEffort: true
   });
@@ -514,7 +514,7 @@ Map.addLayer(dii_pixels,{},'dii_pixels');
 var num_dii_pixels = dii_pixels.reduceRegion({
   reducer: ee.Reducer.sum(),              
   geometry: bounds,
-  scale: 10, // native resolution 
+  scale: 15, // native resolution 
   //maxPixels: 1e9,
   bestEffort: true
   });
@@ -525,7 +525,7 @@ Map.addLayer(diiAndmndwi_pixels,{},'diiAndmndwi_pixels');
 var num_diiAndmndwi_pixels = diiAndmndwi_pixels.reduceRegion({
   reducer: ee.Reducer.sum(),              
   geometry: bounds,
-  scale: 10, // native resolution 
+  scale: 15, // native resolution 
   //maxPixels: 1e9,
   bestEffort: true
   });
