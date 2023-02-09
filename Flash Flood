@@ -321,7 +321,7 @@ Map.addLayer(diff_image_flood, {palette: 'brown'}, "diff_image_flood",0);
 Map.addLayer(mndwi_flood, {palette: 'ff822a'}, "mndwi_flood", 0);
 Map.addLayer(swater_clip, {palette: ['20cbdc']}, "Open Waters", 0);
 Map.setOptions('HYBRID');
-Map.centerObject(bounds);
+Map.centerObject(bounds, 12);
 
 // NDFI Pixel Analysis -----------------------------------
 // Removing Cloud Covers and Cloud Shadows from NDFI flood inundation layers
@@ -359,7 +359,7 @@ var num_mndwi_pixels = mndwi_pixels.reduceRegion({
   reducer: ee.Reducer.sum(),              
   geometry: bounds,
   scale: 15, // native resolution 
-  //maxPixels: 1e9,
+  maxPixels: 1e9,
   bestEffort: true
   });
 print("num_mndwi_pixels", num_mndwi_pixels);
@@ -370,7 +370,7 @@ var num_ndfi_pixels = ndfi_pixels.reduceRegion({
   reducer: ee.Reducer.sum(),              
   geometry: bounds,
   scale: 15, // native resolution 
-  //maxPixels: 1e9,
+  maxPixels: 1e9,
   bestEffort: true
   });
 print("num_ndfi_pixels", num_ndfi_pixels);
@@ -382,7 +382,7 @@ var num_ndfiAndmndwi_pixels = ndfiAndmndwi_pixels.reduceRegion({
   reducer: ee.Reducer.sum(),              
   geometry: bounds,
   scale: 15, // native resolution 
-  //maxPixels: 1e9,
+  maxPixels: 1e9,
   bestEffort: true
   });
 print("num_ndfiAndmndwi_pixels", num_ndfiAndmndwi_pixels);
@@ -432,7 +432,7 @@ var num_ri_mndwi_pixels = ri_mndwi_pixels.reduceRegion({
   reducer: ee.Reducer.sum(),              
   geometry: bounds,
   scale: 15, // native resolution 
-  //maxPixels: 1e9,
+  maxPixels: 1e9,
   bestEffort: true
   });
 print("num_ri_mndwi_pixels", num_ri_mndwi_pixels);
@@ -443,7 +443,7 @@ var num_ri_pixels = ri_pixels.reduceRegion({
   reducer: ee.Reducer.sum(),              
   geometry: bounds,
   scale: 15, // native resolution 
-  //maxPixels: 1e9,
+  maxPixels: 1e9,
   bestEffort: true
   });
 print("num_ri_pixels", num_ri_pixels);
@@ -455,7 +455,7 @@ var num_riAndmndwi_pixels = riAndmndwi_pixels.reduceRegion({
   reducer: ee.Reducer.sum(),              
   geometry: bounds,
   scale: 15, // native resolution 
-  //maxPixels: 1e9,
+  maxPixels: 1e9,
   bestEffort: true
   });
 print("num_riAndmndwi_pixels", num_riAndmndwi_pixels);
@@ -484,7 +484,7 @@ var num_undcldfld_diff_pixels = undcldfld_diff_pixels.reduceRegion({
   reducer: ee.Reducer.sum(),              
   geometry: bounds,
   scale: 15, // native resolution 
-  //maxPixels: 1e9,
+  maxPixels: 1e9,
   bestEffort: true
   });
 
@@ -504,7 +504,7 @@ var num_dii_mndwi_pixels = dii_mndwi_pixels.reduceRegion({
   reducer: ee.Reducer.sum(),              
   geometry: bounds,
   scale: 15, // native resolution 
-  //maxPixels: 1e9,
+  maxPixels: 1e9,
   bestEffort: true
   });
 print("num_dii_mndwi_pixels", num_dii_mndwi_pixels);
@@ -515,7 +515,7 @@ var num_dii_pixels = dii_pixels.reduceRegion({
   reducer: ee.Reducer.sum(),              
   geometry: bounds,
   scale: 15, // native resolution 
-  //maxPixels: 1e9,
+  maxPixels: 1e9,
   bestEffort: true
   });
 print("num_dii_pixels", num_dii_pixels);
@@ -526,7 +526,7 @@ var num_diiAndmndwi_pixels = diiAndmndwi_pixels.reduceRegion({
   reducer: ee.Reducer.sum(),              
   geometry: bounds,
   scale: 15, // native resolution 
-  //maxPixels: 1e9,
+  maxPixels: 1e9,
   bestEffort: true
   });
 print("num_diiAndmndwi_pixels", num_diiAndmndwi_pixels);
