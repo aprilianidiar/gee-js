@@ -31,7 +31,7 @@ var bounds = /* color: #d63000 */ee.Geometry.Polygon(
 
 
 // [before_start,before_end,after_start,after_end,k_ndfi,k_ri,k_diff,mndwi_threshold]
-var params = ['2017-06-01','2017-06-15','2017-08-01','2017-09-10',1.0,0.25,0.8,0.4];
+var params = ['2022-06-01','2022-06-15','2022-08-01','2022-09-10',1.0,0.25,0.8,0.4];
 
 // SAR Input Data 
 var before_start = params[0];
