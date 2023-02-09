@@ -314,7 +314,7 @@ mndwi_filtered = mndwi_filtered.updateMask(mndwi_connections.eq(1));
 
 var mndwi_flood = mndwi_filtered.updateMask(mndwi_filtered.eq(1));
 
-// Dispaly -----------------------------------
+// Display -----------------------------------
 Map.addLayer(ndfi_flood, {palette: 'red'}, 'ndfi_flood',0);
 Map.addLayer(ri_flood, {palette: '00bee9'}, "ri_flood",0);
 Map.addLayer(diff_image_flood, {palette: 'brown'}, "diff_image_flood",0);
