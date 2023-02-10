@@ -602,3 +602,6 @@ for (var i = 0; i < 4; i++) {
 
 // add legend to map (alternatively you can also print the legend to the console)
 Map.add(legend);
+
+// generate an assetID 
+var outputName = ee.String('Sentinel-2').cat('2022-01-01').getInfo();
