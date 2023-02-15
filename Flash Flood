@@ -294,8 +294,8 @@ var shadowBit = 11 ;
 var clouds_1 = qa.bitwiseAnd(Math.pow(radix,cloudBit)).neq(0).rename('clouds');
 var clouds_2 = qa.bitwiseAnd(Math.pow(radix,shadowBit)).neq(0).rename('shadows');
 
-//Map.addLayer(clouds_1.updateMask(clouds_1.eq(1)),{palette:'crimson'},'clouds [mc]',0);
-//Map.addLayer(clouds_2.updateMask(clouds_2.eq(1)),{palette:'gold'},'shadows [mc]',0);
+Map.addLayer(clouds_1.updateMask(clouds_1.eq(1)),{palette:'crimson'},'clouds [mc]',0);
+Map.addLayer(clouds_2.updateMask(clouds_2.eq(1)),{palette:'gold'},'shadows [mc]',0);
 
 var cloudsMasked = sentinel2_flood_clip.updateMask(clouds_1.eq(0).and(clouds_2.eq(0)));
 
@@ -307,7 +307,7 @@ var swir2_s2 = cloudsMasked.select('B12');
 var mndwi_s2 = green_s2.subtract(swir1_s2).divide(green_s2.add(swir1_s2)).rename('mndwi_s2');
 
 var mndwi_masked = mndwi_s2.where(swater_mask, 0);
-//Map.addLayer(mndwi_masked,{min:-0.5446808338165283,max:0.9092437028884888,palette:['02991c','37a3ff','ff822a']},'mndwi_masked',0);
+Map.addLayer(mndwi_masked,{min:-0.5446808338165283,max:0.9092437028884888,palette:['02991c','37a3ff','ff822a']},'mndwi_masked',0);
 
 var mndwi_filtered = mndwi_masked.gt(mndwi_threshold);
 var mndwi_connections = mndwi_filtered.connectedPixelCount().gte(25);
