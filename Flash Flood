@@ -31,7 +31,7 @@ var bounds = /* color: #d63000 */ee.Geometry.Polygon(
 
 
 // [before_start,before_end,after_start,after_end,k_ndfi,k_ri,k_diff,mndwi_threshold]
-var params = ['2022-06-01','2022-06-15','2022-08-01','2022-09-10',1.0,0.25,0.8,0.4];
+var params = ['2022-01-01','2022-01-15','2022-08-01','2022-09-10',1.0,0.25,0.8,0.4];
 
 // SAR Input Data 
 var before_start = params[0];
@@ -271,13 +271,13 @@ var diff_image_flood = diff_image_masked.updateMask(diff_image_masked.eq(1));
 //-------------------------------------------------------------------------------------------------
 // Validation Using Sentinel-2 Surface Reflectance Imagery Data -----------------------------------
 var sentinel2_ref = ee.ImageCollection("COPERNICUS/S2")
-  .filterBounds(bounds).filterDate('2017-04-20', '2017-04-30');
+  .filterBounds(bounds).filterDate('2022-01-20', '2022-01-30');
 print(sentinel2_ref,"sentinel2_ref");
 var sentinel2_ref_mosaic = sentinel2_ref.mosaic();
 var sentinel2_ref_clip = sentinel2_ref_mosaic.clip(bounds);
 
 var sentinel2_flood = ee.ImageCollection("COPERNICUS/S2")
-  .filterBounds(bounds).filterDate('2017-09-02', '2017-09-11');
+  .filterBounds(bounds).filterDate('2022-09-02', '2022-09-10');
 print(sentinel2_flood,"sentinel2_flood");
 var sentinel2_flood_mosaic = sentinel2_flood.mosaic();
 var sentinel2_flood_clip = sentinel2_flood_mosaic.clip(bounds);
