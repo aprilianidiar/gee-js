@@ -282,6 +282,7 @@ print(sentinel2_flood,"sentinel2_flood");
 var sentinel2_flood_mosaic = sentinel2_flood.mosaic();
 var sentinel2_flood_clip = sentinel2_flood_mosaic.clip(bounds);
 
+// Cloud cover is too much! -----------------------------------
 Map.addLayer(sentinel2_ref_clip,{min:0,max:2500,bands:['B4','B3','B2']},'true color sentinel2_ref_clip',0);
 Map.addLayer(sentinel2_flood_clip,{min:0,max:2500,bands:['B4','B3','B2']},'true color sentinel2_clip',0);
 
