@@ -316,11 +316,11 @@ mndwi_filtered = mndwi_filtered.updateMask(mndwi_connections.eq(1));
 var mndwi_flood = mndwi_filtered.updateMask(mndwi_filtered.eq(1));
 
 // Display -----------------------------------
-//Map.addLayer(ndfi_flood, {palette: 'red'}, 'ndfi_flood',0);
-//Map.addLayer(ri_flood, {palette: '00bee9'}, "ri_flood",0);
-//Map.addLayer(diff_image_flood, {palette: 'brown'}, "diff_image_flood",0);
-//Map.addLayer(mndwi_flood, {palette: 'ff822a'}, "mndwi_flood", 0);
-//Map.addLayer(swater_clip, {palette: ['20cbdc']}, "Open Waters", 0);
+Map.addLayer(ndfi_flood, {palette: 'red'}, 'ndfi_flood',0);
+Map.addLayer(ri_flood, {palette: '00bee9'}, "ri_flood",0);
+Map.addLayer(diff_image_flood, {palette: 'brown'}, "diff_image_flood",0);
+Map.addLayer(mndwi_flood, {palette: 'ff822a'}, "mndwi_flood", 0);
+Map.addLayer(swater_clip, {palette: ['20cbdc']}, "Open Waters", 0);
 Map.setOptions('HYBRID');
 Map.centerObject(bounds, 12);
 
@@ -339,7 +339,7 @@ var num_undcldfld_ndfi_pixels = undcldfld_ndfi_pixels.reduceRegion({
   reducer: ee.Reducer.sum(),              
   geometry: bounds,
   scale: 15, // native resolution 
-  //maxPixels: 1e9,
+  maxPixels: 1e9,
   bestEffort: true
   });
 
@@ -351,11 +351,11 @@ var compare_ndfi = ndfi_flood_RemCloud.mask().clip(bounds)
   .rename('flood_compare');
 compare_ndfi = compare_ndfi.remap([0,1,3,5,6,8,9],[0,1,2,3,4,5,6]);
 compare_ndfi = compare_ndfi.updateMask(compare_ndfi.gt(0));
-//Map.addLayer(compare_ndfi,{min:0,max:4,palette:['dadada','0400ff','ff0000','fbff00']},'compare_ndfiANDmndwi');
+Map.addLayer(compare_ndfi,{min:0,max:4,palette:['dadada','0400ff','ff0000','fbff00']},'compare_ndfiANDmndwi');
 
 var mndwi_pixels = mndwi_flood.updateMask(compare_ndfi.eq(3));
 
-//Map.addLayer(mndwi_pixels,{},'mndwi_pixels');
+Map.addLayer(mndwi_pixels,{},'mndwi_pixels');
 var num_mndwi_pixels = mndwi_pixels.reduceRegion({
   reducer: ee.Reducer.sum(),              
   geometry: bounds,
@@ -366,7 +366,7 @@ var num_mndwi_pixels = mndwi_pixels.reduceRegion({
 print("num_mndwi_pixels", num_mndwi_pixels);
 
 var ndfi_pixels = ndfi_flood_RemCloud.updateMask(compare_ndfi.eq(1));
-//Map.addLayer(ndfi_pixels,{},'ndfi_pixels');
+Map.addLayer(ndfi_pixels,{},'ndfi_pixels');
 var num_ndfi_pixels = ndfi_pixels.reduceRegion({
   reducer: ee.Reducer.sum(),              
   geometry: bounds,
@@ -378,7 +378,7 @@ print("num_ndfi_pixels", num_ndfi_pixels);
 
 var ndfiAndmndwi_pixels = ndfi_flood_RemCloud.updateMask(mndwi_flood);
 
-//Map.addLayer(ndfiAndmndwi_pixels,{},'ndfiAndmndwi_pixels');
+Map.addLayer(ndfiAndmndwi_pixels,{},'ndfiAndmndwi_pixels');
 var num_ndfiAndmndwi_pixels = ndfiAndmndwi_pixels.reduceRegion({
   reducer: ee.Reducer.sum(),              
   geometry: bounds,
@@ -413,11 +413,11 @@ var num_undcldfld_ri_pixels = undcldfld_ri_pixels.reduceRegion({
   reducer: ee.Reducer.sum(),              
   geometry: bounds,
   scale: 15, // native resolution 
-  //maxPixels: 1e9,
+  maxPixels: 1e9,
   bestEffort: true
   });
 
-//Map.addLayer(undcldfld_ri_pixels,{palette:['fbff00']},'undcldfld_ri');
+Map.addLayer(undcldfld_ri_pixels,{palette:['fbff00']},'undcldfld_ri');
 print("num_undcldfld_ri_pixels", num_undcldfld_ri_pixels);
 
 var compare_ri = ri_flood_RemCloud.mask().clip(bounds)
@@ -425,10 +425,10 @@ var compare_ri = ri_flood_RemCloud.mask().clip(bounds)
   .rename('flood_compare');
 compare_ri = compare_ri.remap([0,1,3,5,6,8,9],[0,1,2,3,4,5,6]);
 compare_ri = compare_ri.updateMask(compare_ri.gt(0));
-//Map.addLayer(compare_ri,{min:0,max:4,palette:['dadada','0400ff','ff0000','00d0ff']},'compare_riANDmndwi');
+Map.addLayer(compare_ri,{min:0,max:4,palette:['dadada','0400ff','ff0000','00d0ff']},'compare_riANDmndwi');
 
 var ri_mndwi_pixels = mndwi_flood.updateMask(compare_ri.eq(3));
-//Map.addLayer(ri_mndwi_pixels,{},'ri_mndwi_pixels');
+Map.addLayer(ri_mndwi_pixels,{},'ri_mndwi_pixels');
 var num_ri_mndwi_pixels = ri_mndwi_pixels.reduceRegion({
   reducer: ee.Reducer.sum(),              
   geometry: bounds,
@@ -439,7 +439,7 @@ var num_ri_mndwi_pixels = ri_mndwi_pixels.reduceRegion({
 print("num_ri_mndwi_pixels", num_ri_mndwi_pixels);
 
 var ri_pixels = ri_flood_RemCloud.updateMask(compare_ri.eq(1));
-//Map.addLayer(ri_pixels,{},'ri_pixels');
+Map.addLayer(ri_pixels,{},'ri_pixels');
 var num_ri_pixels = ri_pixels.reduceRegion({
   reducer: ee.Reducer.sum(),              
   geometry: bounds,
@@ -451,7 +451,7 @@ print("num_ri_pixels", num_ri_pixels);
 
 var riAndmndwi_pixels = ri_flood_RemCloud.updateMask(mndwi_flood);
 
-//Map.addLayer(riAndmndwi_pixels,{},'riAndmndwi_pixels');
+Map.addLayer(riAndmndwi_pixels,{},'riAndmndwi_pixels');
 var num_riAndmndwi_pixels = riAndmndwi_pixels.reduceRegion({
   reducer: ee.Reducer.sum(),              
   geometry: bounds,
@@ -489,7 +489,7 @@ var num_undcldfld_diff_pixels = undcldfld_diff_pixels.reduceRegion({
   bestEffort: true
   });
 
-//Map.addLayer(undcldfld_diff_pixels,{palette:['ceff0c']},'undcldfld_diff_pixels');
+Map.addLayer(undcldfld_diff_pixels,{palette:['ceff0c']},'undcldfld_diff_pixels');
 print("num_undcldfld_diff_pixels", num_undcldfld_diff_pixels);
 
 var compare_dii = diff_flood_RemCloud.mask().clip(bounds)
@@ -500,7 +500,7 @@ compare_dii = compare_dii.updateMask(compare_dii.gt(0));
 Map.addLayer(compare_dii,{min:0,max:4,palette:['dadada','0400ff','ff0000','fbff00']},'compare_diiANDmndwi');
 
 var dii_mndwi_pixels = mndwi_flood.updateMask(compare_dii.eq(3));
-//Map.addLayer(dii_mndwi_pixels,{},'dii_mndwi_pixels');
+Map.addLayer(dii_mndwi_pixels,{},'dii_mndwi_pixels');
 var num_dii_mndwi_pixels = dii_mndwi_pixels.reduceRegion({
   reducer: ee.Reducer.sum(),              
   geometry: bounds,
@@ -511,7 +511,7 @@ var num_dii_mndwi_pixels = dii_mndwi_pixels.reduceRegion({
 print("num_dii_mndwi_pixels", num_dii_mndwi_pixels);
 
 var dii_pixels = diff_flood_RemCloud.updateMask(compare_dii.eq(1));
-//Map.addLayer(dii_pixels,{},'dii_pixels');
+Map.addLayer(dii_pixels,{},'dii_pixels');
 var num_dii_pixels = dii_pixels.reduceRegion({
   reducer: ee.Reducer.sum(),              
   geometry: bounds,
@@ -522,7 +522,7 @@ var num_dii_pixels = dii_pixels.reduceRegion({
 print("num_dii_pixels", num_dii_pixels);
 
 var diiAndmndwi_pixels = diff_flood_RemCloud.updateMask(mndwi_flood);
-//Map.addLayer(diiAndmndwi_pixels,{},'diiAndmndwi_pixels');
+Map.addLayer(diiAndmndwi_pixels,{},'diiAndmndwi_pixels');
 var num_diiAndmndwi_pixels = diiAndmndwi_pixels.reduceRegion({
   reducer: ee.Reducer.sum(),              
   geometry: bounds,
