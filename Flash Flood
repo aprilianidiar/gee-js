@@ -2,7 +2,19 @@
 var dem = ee.Image("USGS/SRTMGL1_003"),
     swater = ee.Image("JRC/GSW1_4/GlobalSurfaceWater"),
     s1 = ee.ImageCollection("COPERNICUS/S1_GRD"),
-    bounds = ee.FeatureCollection("users/aprilia_gicait/MOCHA_ROI_MYR_Coast");
+    bounds = 
+    /* color: #ffc82d */
+    /* shown: false */
+    /* displayProperties: [
+      {
+        "type": "rectangle"
+      }
+    ] */
+    ee.Geometry.Polygon(
+        [[[91.80168150109081, 21.746987689514388],
+          [91.80168150109081, 21.407291633311125],
+          [92.16011045616894, 21.407291633311125],
+          [92.16011045616894, 21.746987689514388]]], null, false);
 /***** End of imports. If edited, may not auto-convert in the playground. *****/
 //Changing the study area
 // Study Area Boundaries
@@ -478,6 +490,18 @@ var compare_dii = diff_flood_RemCloud.mask().clip(bounds)
 compare_dii = compare_dii.remap([0,1,3,5,6,8,9],[0,1,2,3,4,5,6]);
 compare_dii = compare_dii.updateMask(compare_dii.gt(0));
 Map.addLayer(compare_dii,{min:0,max:4,palette:['dadada','0400ff','ff0000','fbff00']},'compare_diiANDmndwi');
+
+Export.image.toDrive({
+  image: compare_dii,
+  description: 'compare_dii',
+  scale: 10,
+  maxPixels: 1e12,
+  formatOptions: {
+    cloudOptimized: true
+  }
+});
+
+//flash flood detected here -------------------------------------------------^^^^
 
 var dii_mndwi_pixels = mndwi_flood.updateMask(compare_dii.eq(3));
 Map.addLayer(dii_mndwi_pixels,{},'dii_mndwi_pixels');
