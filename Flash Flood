@@ -19,16 +19,13 @@ var geometry =
         [[[-94.5214452285728, 30.165244882083663],
           [-94.5214452285728, 29.56024879238989],
           [-93.36650748443218, 29.56024879238989],
-          [-93.36650748443218, 30.165244882083663]]], null, false);
+          [-93.36650748443218, 30.165244882083663]]], null, false),
+    b_mocha = ee.FeatureCollection("users/aprilia_gicait/MOCHA_ROI_BGD");
 /***** End of imports. If edited, may not auto-convert in the playground. *****/
 //Changing the study area
 // Study Area Boundaries
-var bounds = /* color: #d63000 */ee.Geometry.Polygon(
-        [[[96.35105440254775,16.70796856952083],
-        [96.35105440254775,16.977416614624072],
-        [95.97614595528212,16.977416614624072],
-        [95.97614595528212,16.70796856952083]]], null, false);
-
+var bounds = ee.FeatureCollection('b_mocha');
+Map.addLayer (bounds, ['red'], "Bangladesh Mocha Area");
 
 // [before_start,before_end,after_start,after_end,k_ndfi,k_ri,k_diff,mndwi_threshold]
 var params = ['2021-06-01','2022-06-15','2021-08-01','2022-09-10',1.0,0.25,0.8,0.4];
