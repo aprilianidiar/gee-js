@@ -1,6 +1,5 @@
 /**** Start of imports. If edited, may not auto-convert in the playground. ****/
-var mochab = ee.FeatureCollection("users/aprilia_gicait/MOCHA_ROI_BGD"),
-    dem = ee.Image("USGS/SRTMGL1_003"),
+var dem = ee.Image("USGS/SRTMGL1_003"),
     swater = ee.Image("JRC/GSW1_4/GlobalSurfaceWater"),
     s1 = ee.ImageCollection("COPERNICUS/S1_GRD"),
     bounds = ee.FeatureCollection("users/aprilia_gicait/MOCHA_ROI_MYR_Coast");
@@ -39,7 +38,7 @@ var collection = ee.ImageCollection('COPERNICUS/S1_GRD')
   .filter(ee.Filter.listContains('transmitterReceiverPolarisation', polarization))
   .filter(ee.Filter.eq('orbitProperties_pass', pass_direction)) 
   .filter(ee.Filter.eq('resolution_meters', 10))
-  .filterBounds(mochab)
+  .filterBounds(bounds)
   .select(polarization);
 
 var before = collection.filterDate(before_start, before_end);
@@ -49,13 +48,13 @@ print("after", after);
 
 // Generating Reference and Flood Multi-temporal SAR Data ------------------------
 // Mean Before and Min After ------------------------
-var mean_before = before.mean().clip(mochab);
-var min_after = after.min().clip(mochab);
-var max_after = after.max().clip(mochab);
-var mean_after = after.mean().clip(mochab);
+var mean_before = before.mean().clip(bounds);
+var min_after = after.min().clip(bounds);
+var max_after = after.max().clip(bounds);
+var mean_after = after.mean().clip(bounds);
 
-//Map.addLayer(mean_before, {min: -29.264204107025904, max: -8.938093778644141, palette: []}, "mean_before",0);
-//Map.addLayer(min_after, {min: -29.29334290990966, max: -11.928313976797138, palette: []}, "min_after",1);
+Map.addLayer(mean_before, {min: -29.264204107025904, max: -8.938093778644141, palette: []}, "mean_before",0);
+Map.addLayer(min_after, {min: -29.29334290990966, max: -11.928313976797138, palette: []}, "min_after",1);
 
 // Flood identification ------------------------
 // NDFI ------------------------
@@ -66,13 +65,13 @@ var ndfi_filtered = ndfi.focal_mean({radius: 50, kernelType: 'circle', units: 'm
 // NDFI Normalization -----------------------
 var ndfi_min = ndfi_filtered.reduceRegion({
   reducer: ee.Reducer.min(),
-  geometry: mochab,
+  geometry: bounds,
   scale: 15,
   maxPixels: 1e13
 });
 var ndfi_max = ndfi_filtered.reduceRegion({
   reducer: ee.Reducer.max(),
-  geometry: mochab,
+  geometry: bounds,
   scale: 15,
   maxPixels: 1e13
 });
@@ -81,33 +80,33 @@ var ndfi_rang = ee.Number(ndfi_max.get('VH')).subtract(ee.Number(ndfi_min.get('V
 var ndfi_subtctMin = ndfi_filtered.subtract(ee.Number(ndfi_min.get('VH')));
 var ndfi_norm = ndfi_subtctMin.divide(ndfi_rang);
 
-//Map.addLayer(ndfi_norm, {min: 0.3862747346632676, max: 0.7632898395906615}, "ndfi_norm",0);
+Map.addLayer(ndfi_norm, {min: 0.3862747346632676, max: 0.7632898395906615}, "ndfi_norm",0);
 
 var histogram = ui.Chart.image.histogram({
   image: ndfi_norm,
-  region: mochab,
+  region: bounds,
   scale: 15,
   maxPixels: 1e13
 });
-//print("ndfi_norm Histogram", histogram);
+print("ndfi_norm Histogram", histogram);
 
 // NDFI Thresholding ------------------------
 var ndfi_mean = ndfi_norm.reduceRegion({
   reducer: ee.Reducer.mean(),
-  geometry: mochab,
+  geometry: bounds,
   scale: 15,
   maxPixels: 1e13
 });
 
 var ndfi_std = ndfi_norm.reduceRegion({
   reducer: ee.Reducer.stdDev(),
-  geometry: mochab,
+  geometry: bounds,
   scale: 15,
   maxPixels: 1e13
 });
 
 var ndfi_th = ee.Number(ndfi_mean.get('VH')).subtract(ee.Number(k_ndfi).multiply(ee.Number(ndfi_std.get('VH'))));
-//print('ndfi_th = ', ndfi_th);
+print('ndfi_th = ', ndfi_th);
 
 // Apply Thresholding Value on NDFI
 var ndfi_filtered = ndfi_norm.lt(ndfi_th);
@@ -115,7 +114,7 @@ var ndfi_filtered = ndfi_norm.lt(ndfi_th);
 // NDFI Masking -------------------------------------
 var swater_mask = swater.gte(4);
 var slope_mask = slope.lt(5);
-var swater_clip = swater_mask.clip(mochab);
+var swater_clip = swater_mask.clip(bounds);
 
 var ndfi_flooded_masked = ndfi_filtered.where(swater_mask, 0)
   .updateMask(slope_mask.eq(1));
@@ -131,14 +130,14 @@ var ri_filtered = ri.focal_mean({radius: 50, kernelType: 'circle', units: 'meter
 // RI Normalization -----------------------
 var ri_min = ri_filtered.reduceRegion({
   reducer: ee.Reducer.min(),
-  geometry: mochab,
+  geometry: bounds,
   scale: 15,
   maxPixels: 1e13
 });
 
 var ri_max = ri_filtered.reduceRegion({
   reducer: ee.Reducer.max(),
-  geometry: mochab,
+  geometry: bounds,
   scale: 15,
   maxPixels: 1e13
 });
@@ -147,33 +146,33 @@ var ri_rang = ee.Number(ri_max.get('VH')).subtract(ee.Number(ri_min.get('VH')));
 var ri_subtctMin = ri_filtered.subtract(ee.Number(ri_min.get('VH')));
 var ri_norm = ri_subtctMin.divide(ri_rang);
 
-//Map.addLayer(ri_norm, {min: 0.02946113630948349, max: 0.14605562985795736}, "ri_norm", 0);
+Map.addLayer(ri_norm, {min: 0.02946113630948349, max: 0.14605562985795736}, "ri_norm", 0);
 
 var histogram = ui.Chart.image.histogram({
   image: ri_norm,
-  region: mochab,
+  region: bounds,
   scale: 15,
   maxPixels: 1e13
 });
-//print("ri_norm Histogram", histogram);
+print("ri_norm Histogram", histogram);
 
 // RI Thresholding ------------------------
 var ri_mean = ri_norm.reduceRegion({
   reducer: ee.Reducer.mean(),
-  geometry: mochab,
+  geometry: bounds,
   scale: 15,
   maxPixels: 1e13
 });
 
 var ri_std = ri_norm.reduceRegion({
   reducer: ee.Reducer.stdDev(),
-  geometry: mochab,
+  geometry: bounds,
   scale: 15,
   maxPixels: 1e13
 });
 
 var ri_th = ee.Number(ri_mean.get('VH')).add(ee.Number(k_ri).multiply(ee.Number(ri_std.get('VH'))));
-//print('ri_th = ', ri_th);
+print('ri_th = ', ri_th);
 
 // Apply Thresholding on RI
 var ri_filtered = ri_norm.gt(ri_th);
@@ -193,14 +192,14 @@ var diff_image_filtered = diff_image.focal_mean({radius: 50, kernelType: 'circle
 // DII Normalization
 var diff_image_min = diff_image_filtered.reduceRegion({
   reducer: ee.Reducer.min(),
-  geometry: mochab,
+  geometry: bounds,
   scale: 15,
   maxPixels: 1e13
 });
 
 var diff_image_max = diff_image_filtered.reduceRegion({
   reducer: ee.Reducer.max(),
-  geometry: mochab,
+  geometry: bounds,
   scale: 15,
   maxPixels: 1e13
 });
@@ -209,33 +208,33 @@ var diff_image_rang = ee.Number(diff_image_max.get('VH')).subtract(ee.Number(dif
 var diff_image_subtctMin = diff_image_filtered.subtract(ee.Number(diff_image_min.get('VH')));
 var diff_image_norm = diff_image_subtctMin.divide(diff_image_rang);
 
-//Map.addLayer(diff_image_norm, {min: 0.1434809241093373, max: 0.7689478379887918}, "diff_image_norm", 0);
+Map.addLayer(diff_image_norm, {min: 0.1434809241093373, max: 0.7689478379887918}, "diff_image_norm", 0);
 
 var histogram = ui.Chart.image.histogram({
   image: diff_image_norm,
-  region: mochab,
+  region: bounds,
   scale: 15,
   maxPixels: 1e13
 });
-//print("diff_image_norm Histogram", histogram);
+print("diff_image_norm Histogram", histogram);
 
 // DII Thresholding ------------------------
 var diff_image_mean = diff_image_norm.reduceRegion({
   reducer: ee.Reducer.mean(),
-  geometry: mochab,
+  geometry: bounds,
   scale: 15,
   maxPixels: 1e13
 });
 
 var diff_image_std = diff_image_norm.reduceRegion({
   reducer: ee.Reducer.stdDev(),
-  geometry: mochab,
+  geometry: bounds,
   scale: 15,
   maxPixels: 1e13
 });
 
 var diff_image_th = ee.Number(diff_image_mean.get('VH')).add(ee.Number(k_diff).multiply(ee.Number(diff_image_std.get('VH'))));
-//print('diff_image_th = ', diff_image_th);
+print('diff_image_th = ', diff_image_th);
 
 // Apply Thresholding on DII
 var diff_image_filtered = diff_image_norm.gt(diff_image_th);
@@ -250,22 +249,22 @@ var diff_image_flood = diff_image_masked.updateMask(diff_image_masked.eq(1));
 //-------------------------------------------------------------------------------------------------
 // Validation Using Sentinel-2 Surface Reflectance Imagery Data -----------------------------------
 var sentinel2_ref = ee.ImageCollection("COPERNICUS/S2")
-  .filterBounds(mochab).filterDate('2021-12-20', '2021-12-30');
+  .filterBounds(bounds).filterDate('2021-01-01', '2023-03-16');
 print(sentinel2_ref,"sentinel2_ref");
 var sentinel2_ref_mosaic = sentinel2_ref.mosaic();
-var sentinel2_ref_clip = sentinel2_ref_mosaic.clip(mochab);
+var sentinel2_ref_clip = sentinel2_ref_mosaic.clip(bounds);
 
 var sentinel2_flood = ee.ImageCollection("COPERNICUS/S2")
-  .filterBounds(mochab).filterDate('2022-06-02', '2022-06-10');
+  .filterBounds(bounds).filterDate('2021-01-01', '2023-03-16');
 print(sentinel2_flood,"sentinel2_flood");
 var sentinel2_flood_mosaic = sentinel2_flood.mosaic();
-var sentinel2_flood_clip = sentinel2_flood_mosaic.clip(mochab);
+var sentinel2_flood_clip = sentinel2_flood_mosaic.clip(bounds);
 
 // Cloud cover is too much! -----------------------------------
-//Map.addLayer(sentinel2_ref_clip,{min:0,max:2500,bands:['B4','B3','B2']},
-//    'true color sentinel2_ref_clip',0);
-//Map.addLayer(sentinel2_flood_clip,{min:0,max:2500,bands:['B4','B3','B2']},
-//    'true color sentinel2_clip',0);
+Map.addLayer(sentinel2_ref_clip,{min:0,max:2500,bands:['B4','B3','B2']},
+    'true color sentinel2_ref_clip',0);
+Map.addLayer(sentinel2_flood_clip,{min:0,max:2500,bands:['B4','B3','B2']},
+    'true color sentinel2_clip',0);
 
 // Cloud Covers and Cloud Shadows Masks
 var qa = sentinel2_flood_clip.select('QA60');
@@ -303,13 +302,13 @@ Map.addLayer(diff_image_flood, {palette: 'brown'}, "diff_image_flood",0);
 Map.addLayer(mndwi_flood, {palette: 'ff822a'}, "mndwi_flood", 0);
 Map.addLayer(swater_clip, {palette: ['20cbdc']}, "Open Waters", 0);
 Map.setOptions('HYBRID');
-Map.centerObject(mochab, 12);
+Map.centerObject(bounds, 12);
 
 // NDFI Pixel Analysis -----------------------------------
 // Removing Cloud Covers and Cloud Shadows from NDFI flood inundation layers
 var ndfi_flood_RemCloud = ndfi_flood.updateMask(clouds_1.eq(0).and(clouds_2.eq(0)));
 
-var undcldfld_ndfi = ndfi_flood_RemCloud.mask().clip(mochab)
+var undcldfld_ndfi = ndfi_flood_RemCloud.mask().clip(bounds)
   .add(ndfi_flood.mask().remap([0,1],[0,5]))
   .rename('flood_compare');
 undcldfld_ndfi = undcldfld_ndfi.remap([0,1,3,5,6,8,9],[0,1,2,3,4,5,6]);
@@ -318,7 +317,7 @@ undcldfld_ndfi = undcldfld_ndfi.updateMask(undcldfld_ndfi.gt(0));
 var undcldfld_ndfi_pixels = ndfi_flood.updateMask(undcldfld_ndfi.eq(3));
 var num_undcldfld_ndfi_pixels = undcldfld_ndfi_pixels.reduceRegion({
   reducer: ee.Reducer.sum(),              
-  geometry: mochab,
+  geometry: bounds,
   scale: 15, // native resolution 
   maxPixels: 1e9,
   bestEffort: true
@@ -327,7 +326,7 @@ var num_undcldfld_ndfi_pixels = undcldfld_ndfi_pixels.reduceRegion({
 Map.addLayer(undcldfld_ndfi_pixels,{palette:['ceff0c']},'undcldfld_ndfi');
 print("num_undcldfld_ndfi_pixels", num_undcldfld_ndfi_pixels);
 
-var compare_ndfi = ndfi_flood_RemCloud.mask().clip(mochab)
+var compare_ndfi = ndfi_flood_RemCloud.mask().clip(bounds)
   .add(mndwi_flood.mask().remap([0,1],[0,5]))
   .rename('flood_compare');
 compare_ndfi = compare_ndfi.remap([0,1,3,5,6,8,9],[0,1,2,3,4,5,6]);
@@ -339,7 +338,7 @@ var mndwi_pixels = mndwi_flood.updateMask(compare_ndfi.eq(3));
 Map.addLayer(mndwi_pixels,{},'mndwi_pixels');
 var num_mndwi_pixels = mndwi_pixels.reduceRegion({
   reducer: ee.Reducer.sum(),              
-  geometry: mochab,
+  geometry: bounds,
   scale: 15, // native resolution 
   maxPixels: 1e9,
   bestEffort: true
@@ -350,7 +349,7 @@ var ndfi_pixels = ndfi_flood_RemCloud.updateMask(compare_ndfi.eq(1));
 Map.addLayer(ndfi_pixels,{},'ndfi_pixels');
 var num_ndfi_pixels = ndfi_pixels.reduceRegion({
   reducer: ee.Reducer.sum(),              
-  geometry: mochab,
+  geometry: bounds,
   scale: 15, // native resolution 
   maxPixels: 1e9,
   bestEffort: true
@@ -362,7 +361,7 @@ var ndfiAndmndwi_pixels = ndfi_flood_RemCloud.updateMask(mndwi_flood);
 Map.addLayer(ndfiAndmndwi_pixels,{},'ndfiAndmndwi_pixels');
 var num_ndfiAndmndwi_pixels = ndfiAndmndwi_pixels.reduceRegion({
   reducer: ee.Reducer.sum(),              
-  geometry: mochab,
+  geometry: bounds,
   scale: 15, // native resolution 
   maxPixels: 1e9,
   bestEffort: true
@@ -383,7 +382,7 @@ print("Agreement % NDFI = ", Agr_Percentage_ndfi);
 // Removing Cloud Covers and Cloud Shadows from RI flood inundation layers
 var ri_flood_RemCloud = ri_flood.updateMask(clouds_1.eq(0).and(clouds_2.eq(0)));
 
-var undcldfld_ri = ri_flood_RemCloud.mask().clip(mochab)
+var undcldfld_ri = ri_flood_RemCloud.mask().clip(bounds)
   .add(ri_flood.mask().remap([0,1],[0,5]))
   .rename('flood_compare');
 undcldfld_ri = undcldfld_ri.remap([0,1,3,5,6,8,9],[0,1,2,3,4,5,6]);
@@ -392,7 +391,7 @@ undcldfld_ri = undcldfld_ri.updateMask(undcldfld_ri.gt(0));
 var undcldfld_ri_pixels = ri_flood.updateMask(undcldfld_ri.eq(3));
 var num_undcldfld_ri_pixels = undcldfld_ri_pixels.reduceRegion({
   reducer: ee.Reducer.sum(),              
-  geometry: mochab,
+  geometry: bounds,
   scale: 15, // native resolution 
   maxPixels: 1e9,
   bestEffort: true
@@ -401,7 +400,7 @@ var num_undcldfld_ri_pixels = undcldfld_ri_pixels.reduceRegion({
 Map.addLayer(undcldfld_ri_pixels,{palette:['fbff00']},'undcldfld_ri');
 print("num_undcldfld_ri_pixels", num_undcldfld_ri_pixels);
 
-var compare_ri = ri_flood_RemCloud.mask().clip(mochab)
+var compare_ri = ri_flood_RemCloud.mask().clip(bounds)
   .add(mndwi_flood.mask().remap([0,1],[0,5]))
   .rename('flood_compare');
 compare_ri = compare_ri.remap([0,1,3,5,6,8,9],[0,1,2,3,4,5,6]);
@@ -412,7 +411,7 @@ var ri_mndwi_pixels = mndwi_flood.updateMask(compare_ri.eq(3));
 Map.addLayer(ri_mndwi_pixels,{},'ri_mndwi_pixels');
 var num_ri_mndwi_pixels = ri_mndwi_pixels.reduceRegion({
   reducer: ee.Reducer.sum(),              
-  geometry: mochab,
+  geometry: bounds,
   scale: 15, // native resolution 
   maxPixels: 1e9,
   bestEffort: true
@@ -423,7 +422,7 @@ var ri_pixels = ri_flood_RemCloud.updateMask(compare_ri.eq(1));
 Map.addLayer(ri_pixels,{},'ri_pixels');
 var num_ri_pixels = ri_pixels.reduceRegion({
   reducer: ee.Reducer.sum(),              
-  geometry: mochab,
+  geometry: bounds,
   scale: 15, // native resolution 
   maxPixels: 1e9,
   bestEffort: true
@@ -435,7 +434,7 @@ var riAndmndwi_pixels = ri_flood_RemCloud.updateMask(mndwi_flood);
 Map.addLayer(riAndmndwi_pixels,{},'riAndmndwi_pixels');
 var num_riAndmndwi_pixels = riAndmndwi_pixels.reduceRegion({
   reducer: ee.Reducer.sum(),              
-  geometry: mochab,
+  geometry: bounds,
   scale: 15, // native resolution 
   maxPixels: 1e9,
   bestEffort: true
@@ -455,7 +454,7 @@ print("Agreement % RI = ", Agr_Percentage_ri);
 // Removing Cloud Covers and Cloud Shadows from DII flood inundation layers
 var diff_flood_RemCloud = diff_image_flood.updateMask(clouds_1.eq(0).and(clouds_2.eq(0)));
 
-var undcldfld_diff = diff_flood_RemCloud.mask().clip(mochab)
+var undcldfld_diff = diff_flood_RemCloud.mask().clip(bounds)
   .add(diff_image_flood.mask().remap([0,1],[0,5]))
   .rename('flood_compare');
 undcldfld_diff = undcldfld_diff.remap([0,1,3,5,6,8,9],[0,1,2,3,4,5,6]);
@@ -464,7 +463,7 @@ undcldfld_diff = undcldfld_diff.updateMask(undcldfld_diff.gt(0));
 var undcldfld_diff_pixels = diff_image_flood.updateMask(undcldfld_diff.eq(3));
 var num_undcldfld_diff_pixels = undcldfld_diff_pixels.reduceRegion({
   reducer: ee.Reducer.sum(),              
-  geometry: mochab,
+  geometry: bounds,
   scale: 15, // native resolution 
   maxPixels: 1e9,
   bestEffort: true
@@ -473,7 +472,7 @@ var num_undcldfld_diff_pixels = undcldfld_diff_pixels.reduceRegion({
 Map.addLayer(undcldfld_diff_pixels,{palette:['ceff0c']},'undcldfld_diff_pixels');
 print("num_undcldfld_diff_pixels", num_undcldfld_diff_pixels);
 
-var compare_dii = diff_flood_RemCloud.mask().clip(mochab)
+var compare_dii = diff_flood_RemCloud.mask().clip(bounds)
   .add(mndwi_flood.mask().remap([0,1],[0,5]))
   .rename('flood_compare');
 compare_dii = compare_dii.remap([0,1,3,5,6,8,9],[0,1,2,3,4,5,6]);
@@ -484,7 +483,7 @@ var dii_mndwi_pixels = mndwi_flood.updateMask(compare_dii.eq(3));
 Map.addLayer(dii_mndwi_pixels,{},'dii_mndwi_pixels');
 var num_dii_mndwi_pixels = dii_mndwi_pixels.reduceRegion({
   reducer: ee.Reducer.sum(),              
-  geometry: mochab,
+  geometry: bounds,
   scale: 15, // native resolution 
   maxPixels: 1e9,
   bestEffort: true
@@ -495,7 +494,7 @@ var dii_pixels = diff_flood_RemCloud.updateMask(compare_dii.eq(1));
 Map.addLayer(dii_pixels,{},'dii_pixels');
 var num_dii_pixels = dii_pixels.reduceRegion({
   reducer: ee.Reducer.sum(),              
-  geometry: mochab,
+  geometry: bounds,
   scale: 15, // native resolution 
   maxPixels: 1e9,
   bestEffort: true
@@ -506,7 +505,7 @@ var diiAndmndwi_pixels = diff_flood_RemCloud.updateMask(mndwi_flood);
 Map.addLayer(diiAndmndwi_pixels,{},'diiAndmndwi_pixels');
 var num_diiAndmndwi_pixels = diiAndmndwi_pixels.reduceRegion({
   reducer: ee.Reducer.sum(),              
-  geometry: mochab,
+  geometry: bounds,
   scale: 15, // native resolution 
   maxPixels: 1e9,
   bestEffort: true
