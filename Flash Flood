@@ -493,12 +493,10 @@ Map.addLayer(compare_dii,{min:0,max:4,palette:['dadada','0400ff','ff0000','fbff0
 
 Export.image.toDrive({
   image: compare_dii,
-  description: 'compare_dii',
+  description: 'compare_dii_10',
   scale: 10,
-  maxPixels: 1e12,
-  formatOptions: {
-    cloudOptimized: true
-  }
+  region: bounds,
+  maxPixels: 1e12
 });
 
 //flash flood detected here -------------------------------------------------^^^^
