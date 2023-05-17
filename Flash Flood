@@ -100,7 +100,7 @@ var histogram = ui.Chart.image.histogram({
   scale: 15,
   maxPixels: 1e13
 });
-print("ndfi_norm Histogram", histogram);
+print("NDFI Normalized Histogram", histogram);
 
 // NDFI Thresholding ------------------------
 var ndfi_mean = ndfi_norm.reduceRegion({
@@ -118,10 +118,10 @@ var ndfi_std = ndfi_norm.reduceRegion({
 });
 
 var ndfi_th = ee.Number(ndfi_mean.get('VH')).subtract(ee.Number(k_ndfi).multiply(ee.Number(ndfi_std.get('VH'))));
-print('ndfi_th = ', ndfi_th);
+print('NDFI Tresholding = ', ndfi_th);
 
 // Apply Thresholding Value on NDFI
-var ndfi_filtered = ndfi_norm.lt(ndfi_th);
+var ndfi_filtered = ndfi_norm.lt(ndfi_th); //Image.lt for masking
 
 // NDFI Masking -------------------------------------
 var swater_mask = swater.gte(4);
