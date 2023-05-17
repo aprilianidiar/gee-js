@@ -14,19 +14,13 @@ var clip = mosaic.clip(bounds);
 
 print ('ALOS Image', HH);
 
-Map.addLayer (HH, {min: 0, max: 8000}, 'Mocha Cyclone in Bangladesh');
+Map.addLayer (HH, {min: 0, max: 8000}, 'ALOS');
 Map.centerObject (bounds);
 
-//Import Water Data
-var dataset = ee.Image('JRC/GSW1_4/GlobalSurfaceWater');
+//Import Water Data--------------------------------
+var water = ee.Image('JRC/GSW1_4/GlobalSurfaceWater')
+              .select(['occurrence'])
+;
 
-var visualization = {
-  bands: ['occurrence'],
-  min: 0.0,
-  max: 100.0,
-  palette: ['ffffff', 'ffbbbb', '0000ff']
-};
+Map.addLayer(water, {min:0.0, max: 100.0, palette:['ffffff', 'ffbbbb', '0000ff']}, 'Water Occurence');
 
-Map.setCenter(92, 21.59);
-
-Map.addLayer(dataset, visualization, 'Occurrence');
