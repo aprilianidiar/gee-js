@@ -4,7 +4,6 @@ var dem = ee.Image("USGS/SRTMGL1_003"),
     s1 = ee.ImageCollection("COPERNICUS/S1_GRD"),
     bounds = 
     /* color: #ffc82d */
-    /* shown: false */
     /* displayProperties: [
       {
         "type": "rectangle"
@@ -16,10 +15,11 @@ var dem = ee.Image("USGS/SRTMGL1_003"),
           [92.16011045616894, 21.407291633311125],
           [92.16011045616894, 21.746987689514388]]], null, false);
 /***** End of imports. If edited, may not auto-convert in the playground. *****/
-//Changing the study area
-// Study Area Boundaries
+// Source: Hamidi et al., 2022 (Fast Flood Extent Monitoring with SAR Change Detection Using Google Earth Engine)
 
+// Changing the study area - change "bounds" parameter
 
+// Set parameters beforehand
 // [before_start,before_end,after_start,after_end,k_ndfi,k_ri,k_diff,mndwi_threshold]
 var params = ['2023-04-01','2023-05-01','2023-05-02','2023-05-16',1.0,0.25,0.8,0.4];
 
