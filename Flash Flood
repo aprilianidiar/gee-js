@@ -4,6 +4,7 @@ var dem = ee.Image("USGS/SRTMGL1_003"),
     s1 = ee.ImageCollection("COPERNICUS/S1_GRD"),
     bounds = 
     /* color: #ffc82d */
+    /* shown: false */
     /* displayProperties: [
       {
         "type": "rectangle"
