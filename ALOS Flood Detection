@@ -1,0 +1,3 @@
+/**** Start of imports. If edited, may not auto-convert in the playground. ****/
+var imageCollection = ee.ImageCollection("JAXA/ALOS/PALSAR-2/Level2_2/ScanSAR");
+/***** End of imports. If edited, may not auto-convert in the playground. *****/
