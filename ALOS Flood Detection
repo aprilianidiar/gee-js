@@ -1,3 +1,11 @@
 /**** Start of imports. If edited, may not auto-convert in the playground. ****/
-var imageCollection = ee.ImageCollection("JAXA/ALOS/PALSAR-2/Level2_2/ScanSAR");
+var alos = ee.ImageCollection("JAXA/ALOS/PALSAR-2/Level2_2/ScanSAR"),
+    dsm = ee.ImageCollection("JAXA/ALOS/AW3D30/V3_2"),
+    bounds = ee.FeatureCollection("users/aprilia_gicait/MOCHA_ROI_BGD");
 /***** End of imports. If edited, may not auto-convert in the playground. *****/
+//Import ALOS Data
+var dataset = ee.ImageCollection('JAXA/ALOS/PALSAR-2/Level2_2/ScanSAR')
+                .filterBounds(bounds)
+                .filterDate('2023-05-01','2023-05-15')
+                .select('HH')
+;
