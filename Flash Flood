@@ -1,7 +1,9 @@
 /**** Start of imports. If edited, may not auto-convert in the playground. ****/
 var dem = ee.Image("USGS/SRTMGL1_003"),
     swater = ee.Image("JRC/GSW1_4/GlobalSurfaceWater"),
-    s1 = ee.ImageCollection("COPERNICUS/S1_GRD"),
+    S1 = ee.ImageCollection("COPERNICUS/S1_GRD"),
+    L8 = ee.ImageCollection("LANDSAT/LC08/C02/T1_TOA"),
+    S2 = ee.ImageCollection("COPERNICUS/S2"),
     bounds = 
     /* color: #ffc82d */
     /* shown: false */
