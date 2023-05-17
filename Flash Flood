@@ -45,7 +45,7 @@ var mndwi_threshold = params[7];
 var dem = ee.Image("USGS/SRTMGL1_003").select('elevation');
 var slope = ee.Terrain.slope(dem);
 var swater = ee.Image('JRC/GSW1_4/GlobalSurfaceWater').select('seasonality');
-
+// Applying dataset from SAR - Sentinel 1 
 var collection = ee.ImageCollection('COPERNICUS/S1_GRD')
   .filter(ee.Filter.eq('instrumentMode', 'IW'))
   .filter(ee.Filter.listContains('transmitterReceiverPolarisation', polarization))
@@ -53,8 +53,8 @@ var collection = ee.ImageCollection('COPERNICUS/S1_GRD')
   .filter(ee.Filter.eq('resolution_meters', 10))
   .filterBounds(bounds)
   .select(polarization);
-var before = collection.filterDate(before_start, before_end);
-var after = collection.filterDate(after_start, after_end);
+var before = collection.filterDate(before_start, before_end); //before disaster - PRE
+var after = collection.filterDate(after_start, after_end); //during or after disaster - POST
 print("before", before);
 print("after", after);
 
