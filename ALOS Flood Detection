@@ -3,16 +3,17 @@ var alos = ee.ImageCollection("JAXA/ALOS/PALSAR-2/Level2_2/ScanSAR"),
     dsm = ee.ImageCollection("JAXA/ALOS/AW3D30/V3_2"),
     bounds = ee.FeatureCollection("users/aprilia_gicait/MOCHA_ROI_BGD");
 /***** End of imports. If edited, may not auto-convert in the playground. *****/
-// Import ALOS Data
-var alos_dataset = ee.ImageCollection('JAXA/ALOS/PALSAR-2/Level2_2/ScanSAR')
-                .filterDate('2023-01-01','2023-05-15')
+// Import ALOS Data---------------------------------
+var dataset = ee.ImageCollection('JAXA/ALOS/PALSAR-2/Level2_2/ScanSAR')
+                .filter(ee.Filter.date('2022-01-01','2023-05-15'))
                 .filterBounds(bounds)
 ;
+var HH = dataset.select(['HH']);
+var mosaic = HH.mosaic();
+var clip = mosaic.clip(bounds);
 
-// var alos_mosaic = alos_dataset.mosaic();
-// var alos_clip = alos_mosaic.clip(bounds);
+print ('ALOS Image', HH);
 
-print ('ALOS Image', alos_dataset);
-
-Map.addLayer (alos_dataset.select(['HH']), {min: 0, max: 8000}, 'Mocha Cyclone in Bangladesh');
+Map.addLayer (HH, {min: 0, max: 8000}, 'Mocha Cyclone in Bangladesh');
 Map.centerObject (bounds);
+
