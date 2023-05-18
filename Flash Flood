@@ -274,16 +274,16 @@ var sentinel2_ref_mosaic = sentinel2_ref.mosaic();
 var sentinel2_ref_clip = sentinel2_ref_mosaic.clip(bounds);
 
 var sentinel2_flood = ee.ImageCollection("COPERNICUS/S2")
-  .filterBounds(bounds).filterDate('2023-02-01', '2023-05-11'); //take flood suspectibility
+  .filterBounds(bounds).filterDate('2023-02-01', '2023-05-18'); //take flood suspectibility
 print(sentinel2_flood,"sentinel2_flood");
 var sentinel2_flood_mosaic = sentinel2_flood.mosaic();
 var sentinel2_flood_clip = sentinel2_flood_mosaic.clip(bounds);
 
 // Check on the cloud cover (1)
 Map.addLayer(sentinel2_ref_clip,{min:0,max:2500,bands:['B4','B3','B2']},
-    'true color sentinel2_ref_clip',1);
+    'true color sentinel2_ref_clip',0);
 Map.addLayer(sentinel2_flood_clip,{min:0,max:2500,bands:['B4','B3','B2']},
-    'true color sentinel2_clip',1);
+    'true color sentinel2_clip',0);
 
 // Cloud Covers and Cloud Shadows Masks
 var qa = sentinel2_flood_clip.select('QA60');
@@ -323,7 +323,7 @@ Map.addLayer(diff_image_flood, {palette: 'brown'}, "diff_image_flood",1);
 Map.addLayer(mndwi_flood, {palette: 'ff822a'}, "mndwi_flood", 1);
 
 Map.setOptions('HYBRID');
-Map.centerObject(bounds, 10);
+Map.setCenter(91.99, 21.44, 13);
 
 //---------------------------------- Step 3--------------------------------------------------------
 //-------------------------------------------------------------------------------------------------
