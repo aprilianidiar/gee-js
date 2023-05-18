@@ -274,7 +274,7 @@ var sentinel2_ref_mosaic = sentinel2_ref.mosaic();
 var sentinel2_ref_clip = sentinel2_ref_mosaic.clip(bounds);
 
 var sentinel2_flood = ee.ImageCollection("COPERNICUS/S2")
-  .filterBounds(bounds).filterDate('2023-02-01', '2023-05-11'); //take flood suspectibility
+  .filterBounds(bounds).filterDate('2023-05-01', '2023-05-18'); //take flood suspectibility
 print(sentinel2_flood,"sentinel2_flood");
 var sentinel2_flood_mosaic = sentinel2_flood.mosaic();
 var sentinel2_flood_clip = sentinel2_flood_mosaic.clip(bounds);
