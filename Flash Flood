@@ -274,7 +274,7 @@ var sentinel2_ref_mosaic = sentinel2_ref.mosaic();
 var sentinel2_ref_clip = sentinel2_ref_mosaic.clip(bounds);
 
 var sentinel2_flood = ee.ImageCollection("COPERNICUS/S2")
-  .filterBounds(bounds).filterDate('2023-02-01', '2023-05-18'); //take flood suspectibility
+  .filterBounds(bounds).filterDate('2023-02-01', '2023-05-11'); //take flood suspectibility
 print(sentinel2_flood,"sentinel2_flood");
 var sentinel2_flood_mosaic = sentinel2_flood.mosaic();
 var sentinel2_flood_clip = sentinel2_flood_mosaic.clip(bounds);
@@ -318,7 +318,7 @@ var mndwi_flood = mndwi_filtered.updateMask(mndwi_filtered.eq(1));
 Map.addLayer(swater_clip, {palette: ['20cbdc']}, "Open Waters", 0);
 
 Map.addLayer(ndfi_flood, {palette: 'red'}, 'ndfi_flood',0);
-Map.addLayer(ri_flood, {palette: '00bee9'}, "ri_flood",1);
+Map.addLayer(ri_flood, {palette: '00bee9'}, "ri_flood",0);
 Map.addLayer(diff_image_flood, {palette: 'brown'}, "diff_image_flood",0);
 Map.addLayer(mndwi_flood, {palette: 'ff822a'}, "mndwi_flood", 0);
 
@@ -421,7 +421,7 @@ var num_undcldfld_ri_pixels = undcldfld_ri_pixels.reduceRegion({
   bestEffort: true
   });
 
-Map.addLayer(undcldfld_ri_pixels,{palette:['fbff00']},'undcldfld_ri', 1);
+Map.addLayer(undcldfld_ri_pixels,{palette:['fbff00']},'undcldfld_ri', 0);
 print("num_undcldfld_ri_pixels", num_undcldfld_ri_pixels);
 
 var compare_ri = ri_flood_RemCloud.mask().clip(bounds)
@@ -443,7 +443,7 @@ var num_ri_mndwi_pixels = ri_mndwi_pixels.reduceRegion({
 print("num_ri_mndwi_pixels", num_ri_mndwi_pixels);
 
 var ri_pixels = ri_flood_RemCloud.updateMask(compare_ri.eq(1));
-Map.addLayer(ri_pixels,{},'ri_pixels', 1);
+Map.addLayer(ri_pixels,{},'ri_pixels', 0);
 var num_ri_pixels = ri_pixels.reduceRegion({
   reducer: ee.Reducer.sum(),              
   geometry: bounds,
@@ -536,7 +536,7 @@ var num_dii_pixels = dii_pixels.reduceRegion({
 print("num_dii_pixels", num_dii_pixels);
 
 var diiAndmndwi_pixels = diff_flood_RemCloud.updateMask(mndwi_flood);
-Map.addLayer(diiAndmndwi_pixels,{},'diiAndmndwi_pixels', 0);
+Map.addLayer(diiAndmndwi_pixels,{},'diiAndmndwi_pixels', 1);
 var num_diiAndmndwi_pixels = diiAndmndwi_pixels.reduceRegion({
   reducer: ee.Reducer.sum(),              
   geometry: bounds,
