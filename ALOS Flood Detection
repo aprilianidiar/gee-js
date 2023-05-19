@@ -1,7 +1,8 @@
 /**** Start of imports. If edited, may not auto-convert in the playground. ****/
 var alos = ee.ImageCollection("JAXA/ALOS/PALSAR-2/Level2_2/ScanSAR"),
     dsm = ee.ImageCollection("JAXA/ALOS/AW3D30/V3_2"),
-    bounds = ee.FeatureCollection("users/aprilia_gicait/MOCHA_ROI_BGD");
+    bounds = ee.FeatureCollection("users/aprilia_gicait/MOCHA_ROI_BGD"),
+    dem = ee.Image("NASA/NASADEM_HGT/001");
 /***** End of imports. If edited, may not auto-convert in the playground. *****/
 // Import ALOS Data---------------------------------
 var dataset = ee.ImageCollection('JAXA/ALOS/PALSAR-2/Level2_2/ScanSAR')
@@ -17,10 +18,13 @@ print ('ALOS Image', HH);
 Map.addLayer (HH, {min: 0, max: 8000}, 'ALOS');
 Map.centerObject (bounds);
 
-//Import Water Data--------------------------------
+// Import Water Data--------------------------------
 var water = ee.Image('JRC/GSW1_4/GlobalSurfaceWater')
               .select(['occurrence'])
 ;
 
 Map.addLayer(water, {min:0.0, max: 100.0, palette:['ffffff', 'ffbbbb', '0000ff']}, 'Water Occurence');
 
+// Import DEM to Slope
+var dem = ee.Image('NASA/NASADEM_HGT/001')
+            .select ()
