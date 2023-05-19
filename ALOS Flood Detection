@@ -6,7 +6,7 @@ var alos = ee.ImageCollection("JAXA/ALOS/PALSAR-2/Level2_2/ScanSAR"),
 /***** End of imports. If edited, may not auto-convert in the playground. *****/
 // Import ALOS Data---------------------------------
 var dataset = ee.ImageCollection('JAXA/ALOS/PALSAR-2/Level2_2/ScanSAR')
-                .filter(ee.Filter.date('2022-01-01','2023-05-15'))
+                .filter(ee.Filter.date('2022-05-01','2022-06-22'))
                 .filterBounds(bounds)
 ;
 var HH = dataset.select(['HH']);
@@ -15,7 +15,7 @@ var clip = mosaic.clip(bounds);
 
 print ('ALOS Image', HH);
 
-Map.addLayer (HH, {min: 0, max: 8000}, 'ALOS');
+Map.addLayer (HH, {min: 0, max: 8000}, 'ALOS', 0);
 Map.centerObject (bounds);
 
 // Import Water Data--------------------------------
@@ -23,8 +23,23 @@ var water = ee.Image('JRC/GSW1_4/GlobalSurfaceWater')
               .select(['occurrence'])
 ;
 
-Map.addLayer(water, {min:0.0, max: 100.0, palette:['ffffff', 'ffbbbb', '0000ff']}, 'Water Occurence');
+Map.addLayer(water, {min:0.0, max: 100.0, palette:['ffffff', 'ffbbbb', '0000ff']}, 'Water Occurence', 0);
 
 // Import DEM to Slope
 var dem = ee.Image('NASA/NASADEM_HGT/001')
-            .select ()
+            .select('elevation')
+;
+
+print ('Terrain Image', dem);
+
+var slope = ee.Terrain.slope(dem);
+var slope_clip = slope.clip(bounds);
+Map.addLayer(slope_clip, {min: 0, max: 89.99}, 'Slope', 1);
+
+Export.image.toDrive ({
+  image: slope_clip,
+  description: 'Mocha Slope',
+  scale: 10,
+  region: bounds,
+  maxPixels: 1e12
+});
