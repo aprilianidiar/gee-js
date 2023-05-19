@@ -196,7 +196,8 @@ print('RI Tresholding = ', ri_th);
 var ri_filtered = ri_norm.gt(ri_th);
 
 // RI Masking -------------------------------------
-var ri_masked = ri_filtered.where(swater_mask, 0)
+var ri_masked = ri_filtered
+  .where(swater_mask, 0)
   .updateMask(slope_mask.eq(1));
 var ri_connections = ri_masked.connectedPixelCount().gte(25);
 ri_masked = ri_masked.updateMask(ri_connections.eq(1));
