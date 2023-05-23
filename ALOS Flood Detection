@@ -79,8 +79,8 @@ var ri_max = ri_filtered.reduceRegion({
   maxPixels: 1e13
 });
 
-var ri_rang = ee.Number(ri_max.get('VH')).subtract(ee.Number(ri_min.get('VH')));
-var ri_subtctMin = ri_filtered.subtract(ee.Number(ri_min.get('VH')));
+var ri_rang = ee.Number(ri_max.get('b1')).subtract(ee.Number(ri_min.get('b1')));
+var ri_subtctMin = ri_filtered.subtract(ee.Number(ri_min.get('b1')));
 var ri_norm = ri_subtctMin.divide(ri_rang);
 
 Map.addLayer(ri_norm, {min: 0.02946113630948349, max: 0.14605562985795736}, "ri_norm", 0);
@@ -108,7 +108,7 @@ var ri_std = ri_norm.reduceRegion({
   maxPixels: 1e13
 });
 
-var ri_th = ee.Number(ri_mean.get('VH')).add(ee.Number(k_ri).multiply(ee.Number(ri_std.get('VH'))));
+var ri_th = ee.Number(ri_mean.get('b1')).add(ee.Number(k_ri).multiply(ee.Number(ri_std.get('VH'))));
 print('RI Tresholding = ', ri_th);
 
 // Apply Thresholding on RI
