@@ -53,7 +53,7 @@ var post_img = ee.ImageCollection ([post1, post2])
                  .mosaic()
 ;
 
-Map.addLayer(pre_img, {min: 0, max: 8000}, 'PRE Image');
+Map.addLayer(pre_img, {min: 0, max: 8000}, 'PRE Image', 0);
 
 // ----------------------------------------------------------------------------------------
 // Get the RI calculation for Flash Flood
@@ -108,7 +108,7 @@ var ri_std = ri_norm.reduceRegion({
   maxPixels: 1e13
 });
 
-var ri_th = ee.Number(ri_mean.get('b1')).add(ee.Number(k_ri).multiply(ee.Number(ri_std.get('VH'))));
+var ri_th = ee.Number(ri_mean.get('b1')).add(ee.Number(k_ri).multiply(ee.Number(ri_std.get('b1'))));
 print('RI Tresholding = ', ri_th);
 
 // Apply Thresholding on RI
@@ -122,4 +122,4 @@ var ri_connections = ri_masked.connectedPixelCount().gte(25);
 ri_masked = ri_masked.updateMask(ri_connections.eq(1));
 var ri_flood = ri_masked.updateMask(ri_masked.eq(1));
 
-// Map.addLayer(ri_flood, {palette: '00bee9'}, "ri_flood",0);
+Map.addLayer(ri_flood, {palette: '00bee9'}, "ri_flood", 1);
