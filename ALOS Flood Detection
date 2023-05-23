@@ -63,7 +63,7 @@ var min_after = post_img.focalMin();
 var mean_before = pre_img.focalMean();
 var k_ri = 0.25;
 
-var ri = min_after.abs().divide(mean_before.abs());
+var ri = post_img.abs().divide(pre_img.abs()); // change without 
 var ri_filtered = ri.focal_mean({radius: 50, kernelType: 'circle', units: 'meters'});
 
 // RI Normalization -----------------------
@@ -124,7 +124,7 @@ var ri_connections = ri_masked.connectedPixelCount().gte(25);
 ri_masked = ri_masked.updateMask(ri_connections.eq(1));
 var ri_flood = ri_masked.updateMask(ri_masked.eq(1));
 
-Map.addLayer(bounds, {palette: ['black']}, 'ROI', 1);
+Map.addLayer(bounds, {palette: ['black']}, 'ROI', 0);
 Map.addLayer(ri_flood, {palette: '00bee9'}, 'ri_flood', 0);
 
 Map.centerObject (bounds, 8);
