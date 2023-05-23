@@ -40,6 +40,7 @@ var slope = ee.Terrain.slope(dem);
 var slope_clip = slope.clip(bounds);
 Map.addLayer(slope_clip, {min: 0, max: 89.99}, 'Slope', 0);
 
+// ----------------------------------------------------------------------------------------
 // Calculate RI to Imported ALOS-MOCHA
 // Mosaic each images
 var pre_img = ee.ImageCollection([pre1, pre2])
@@ -54,7 +55,7 @@ var post_img = ee.ImageCollection ([post1, post2])
 
 Map.addLayer(pre_img, {min: 0, max: 8000}, 'PRE Image');
 
-
+// ----------------------------------------------------------------------------------------
 // Get the RI calculation for Flash Flood
 var min_after = post_img.min();
 var mean_before = pre_img.mean();
