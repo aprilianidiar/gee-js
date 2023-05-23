@@ -45,8 +45,79 @@ Map.addLayer(slope_clip, {min: 0, max: 89.99}, 'Slope', 0);
 var pre_img = ee.ImageCollection([pre1, pre2])
                 .mosaic()
 ;
+var pre_img_masked = pre_img.gt(0)
+                            .selfMask();
+
 var post_img = ee.ImageCollection ([post1, post2])
                  .mosaic()
 ;
 
 Map.addLayer(pre_img, {min: 0, max: 8000}, 'PRE Image');
+
+
+// Get the RI calculation for Flash Flood
+var min_after = post_img.min();
+var mean_before = pre_img.mean();
+
+var ri = min_after.abs().divide(mean_before.abs());
+var ri_filtered = ri.focal_mean({radius: 50, kernelType: 'circle', units: 'meters'});
+
+// RI Normalization -----------------------
+var ri_min = ri_filtered.reduceRegion({
+  reducer: ee.Reducer.min(),
+  geometry: bounds,
+  scale: 15,
+  maxPixels: 1e13
+});
+
+var ri_max = ri_filtered.reduceRegion({
+  reducer: ee.Reducer.max(),
+  geometry: bounds,
+  scale: 15,
+  maxPixels: 1e13
+});
+
+var ri_rang = ee.Number(ri_max.get('VH')).subtract(ee.Number(ri_min.get('VH')));
+var ri_subtctMin = ri_filtered.subtract(ee.Number(ri_min.get('VH')));
+var ri_norm = ri_subtctMin.divide(ri_rang);
+
+Map.addLayer(ri_norm, {min: 0.02946113630948349, max: 0.14605562985795736}, "ri_norm", 0);
+
+var histogram = ui.Chart.image.histogram({
+  image: ri_norm,
+  region: bounds,
+  scale: 15,
+  maxPixels: 1e13
+});
+print("RI Normalized Histogram", histogram);
+
+// RI Thresholding ------------------------
+var ri_mean = ri_norm.reduceRegion({
+  reducer: ee.Reducer.mean(),
+  geometry: bounds,
+  scale: 15,
+  maxPixels: 1e13
+});
+
+var ri_std = ri_norm.reduceRegion({
+  reducer: ee.Reducer.stdDev(),
+  geometry: bounds,
+  scale: 15,
+  maxPixels: 1e13
+});
+
+var ri_th = ee.Number(ri_mean.get('VH')).add(ee.Number(k_ri).multiply(ee.Number(ri_std.get('VH'))));
+print('RI Tresholding = ', ri_th);
+
+// Apply Thresholding on RI
+var ri_filtered = ri_norm.gt(ri_th);
+
+// RI Masking -------------------------------------
+var ri_masked = ri_filtered
+  .where(swater_mask, 0)
+  .updateMask(slope_mask.eq(1));
+var ri_connections = ri_masked.connectedPixelCount().gte(25);
+ri_masked = ri_masked.updateMask(ri_connections.eq(1));
+var ri_flood = ri_masked.updateMask(ri_masked.eq(1));
+
+// Map.addLayer(ri_flood, {palette: '00bee9'}, "ri_flood",0);
