@@ -125,5 +125,5 @@ var ri_connections = ri_masked.connectedPixelCount().gte(25);
 ri_masked = ri_masked.updateMask(ri_connections.eq(1));
 var ri_flood = ri_masked.updateMask(ri_masked.eq(1));
 
-Map.addLayer(bounds, {palette: ['FFFFFF']}, 'ROI', 1);
+Map.addLayer(bounds, {palette: ['000000']}, 'ROI', 1);
 Map.addLayer(ri_flood, {palette: '00bee9'}, 'ri_flood', 0);
