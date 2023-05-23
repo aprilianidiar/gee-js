@@ -129,3 +129,5 @@ Map.addLayer(ri_flood, {palette: '00bee9'}, 'ri_flood', 0);
 
 Map.centerObject (bounds, 8);
 
+// Conclusions: flash flood detection cannot be developed using ALOS with HH or HV polarization.
+// Flash flood in using Sentinel-1 only applicable to VH polarization
