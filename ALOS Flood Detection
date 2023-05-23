@@ -57,8 +57,9 @@ Map.addLayer(pre_img, {min: 0, max: 8000}, 'PRE Image');
 
 // ----------------------------------------------------------------------------------------
 // Get the RI calculation for Flash Flood
-var min_after = post_img.min();
-var mean_before = pre_img.mean();
+var min_after = post_img.focalMin();
+var mean_before = pre_img.focalMean();
+var k_ri = 0.25;
 
 var ri = min_after.abs().divide(mean_before.abs());
 var ri_filtered = ri.focal_mean({radius: 50, kernelType: 'circle', units: 'meters'});
@@ -115,8 +116,8 @@ var ri_filtered = ri_norm.gt(ri_th);
 
 // RI Masking -------------------------------------
 var ri_masked = ri_filtered
-  .where(swater_mask, 0)
-  .updateMask(slope_mask.eq(1));
+  .where(water, 0)
+  .updateMask(slope.eq(1));
 var ri_connections = ri_masked.connectedPixelCount().gte(25);
 ri_masked = ri_masked.updateMask(ri_connections.eq(1));
 var ri_flood = ri_masked.updateMask(ri_masked.eq(1));
