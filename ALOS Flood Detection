@@ -63,7 +63,7 @@ var min_after = post_img.focalMin();
 var mean_before = pre_img.focalMean();
 var k_ri = 0.25;
 
-var ri = post_img.abs().divide(pre_img.abs()); // change without 
+var ri = min_after.abs().divide(mean_before.abs()); // change without 
 var ri_filtered = ri.focal_mean({radius: 50, kernelType: 'circle', units: 'meters'});
 
 // RI Normalization -----------------------
