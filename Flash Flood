@@ -13,10 +13,10 @@ var dem = ee.Image("USGS/SRTMGL1_003"),
       }
     ] */
     ee.Geometry.Polygon(
-        [[[91.83189390343456, 21.721474373373734],
-          [91.83189390343456, 21.38171846084121],
-          [92.19032285851269, 21.38171846084121],
-          [92.19032285851269, 21.721474373373734]]], null, false);
+        [[[121.4946154605355, 18.456143175698088],
+          [121.4946154605355, 17.89248086752353],
+          [121.9230822574105, 17.89248086752353],
+          [121.9230822574105, 18.456143175698088]]], null, false);
 /***** End of imports. If edited, may not auto-convert in the playground. *****/
 // Source: Hamidi et al., 2022 (Fast Flood Extent Monitoring with SAR Change Detection Using Google Earth Engine)
 
@@ -24,7 +24,7 @@ var dem = ee.Image("USGS/SRTMGL1_003"),
 
 // Set parameters beforehand
 // [before_start,before_end,after_start,after_end,k_ndfi,k_ri,k_diff,mndwi_threshold]
-var params = ['2023-04-01','2023-05-01','2023-05-02','2023-05-16',1.0,0.25,0.8,0.4];
+var params = ['2023-04-01','2023-05-01','2023-05-01','2023-05-30',1.0,0.25,0.8,0.4];
 
 // SAR Input Data 
 var before_start = params[0];
@@ -275,7 +275,7 @@ var sentinel2_ref_mosaic = sentinel2_ref.mosaic();
 var sentinel2_ref_clip = sentinel2_ref_mosaic.clip(bounds);
 
 var sentinel2_flood = ee.ImageCollection("COPERNICUS/S2")
-  .filterBounds(bounds).filterDate('2023-05-01', '2023-05-18'); //take flood suspectibility
+  .filterBounds(bounds).filterDate('2023-05-20', '2023-05-30'); //take flood suspectibility
 print(sentinel2_flood,"sentinel2_flood");
 var sentinel2_flood_mosaic = sentinel2_flood.mosaic();
 var sentinel2_flood_clip = sentinel2_flood_mosaic.clip(bounds);
@@ -324,7 +324,8 @@ Map.addLayer(diff_image_flood, {palette: 'brown'}, "diff_image_flood",0);
 Map.addLayer(mndwi_flood, {palette: 'ff822a'}, "mndwi_flood", 0);
 
 Map.setOptions('HYBRID');
-Map.setCenter(91.99, 21.44, 13);
+// Map.setCenter(91.99, 21.44, 13);
+Map.centerObject(bounds, 10);
 
 //---------------------------------- Step 3--------------------------------------------------------
 //-------------------------------------------------------------------------------------------------
