@@ -6,6 +6,7 @@ var dem = ee.Image("USGS/SRTMGL1_003"),
     S2 = ee.ImageCollection("COPERNICUS/S2"),
     bounds = 
     /* color: #ffc82d */
+    /* shown: false */
     /* displayProperties: [
       {
         "type": "rectangle"
@@ -23,7 +24,7 @@ var dem = ee.Image("USGS/SRTMGL1_003"),
 
 // Set parameters beforehand
 // [before_start,before_end,after_start,after_end,k_ndfi,k_ri,k_diff,mndwi_threshold]
-var params = ['2023-04-01','2023-05-01','2023-05-01','2023-05-30',1.0,0.25,0.8,0.4];
+var params = ['2023-04-01','2023-05-01','2023-05-01','2023-05-15',1.0,0.25,0.8,0.4];
 
 // SAR Input Data 
 var before_start = params[0];
@@ -324,7 +325,7 @@ Map.addLayer(mndwi_flood, {palette: 'ff822a'}, "mndwi_flood", 0);
 
 Map.setOptions('HYBRID');
 // Map.setCenter(91.99, 21.44, 13);
-Map.centerObject(bounds, 10);
+Map.centerObject(bounds, 11);
 
 //---------------------------------- Step 3--------------------------------------------------------
 //-------------------------------------------------------------------------------------------------
