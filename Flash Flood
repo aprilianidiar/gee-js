@@ -6,6 +6,7 @@ var dem = ee.Image("USGS/SRTMGL1_003"),
     S2 = ee.ImageCollection("COPERNICUS/S2"),
     bounds = 
     /* color: #ffc82d */
+    /* shown: false */
     /* displayProperties: [
       {
         "type": "rectangle"
@@ -16,7 +17,10 @@ var dem = ee.Image("USGS/SRTMGL1_003"),
           [92.10690997753609, 21.01981036555175],
           [92.30397723827828, 21.01981036555175],
           [92.30397723827828, 21.178041708074392]]], null, false),
-    geometry = /* color: #d63000 */ee.Geometry.Point([92.20624815154217, 21.096418824471815]);
+    center = 
+    /* color: #d63000 */
+    /* shown: false */
+    ee.Geometry.Point([92.20624815154217, 21.096418824471815]);
 /***** End of imports. If edited, may not auto-convert in the playground. *****/
 // Source: Hamidi et al., 2022 (Fast Flood Extent Monitoring with SAR Change Detection Using Google Earth Engine)
 
