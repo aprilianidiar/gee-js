@@ -7,11 +7,6 @@ var dem = ee.Image("USGS/SRTMGL1_003"),
     bounds = 
     /* color: #ffc82d */
     /* shown: false */
-    /* displayProperties: [
-      {
-        "type": "rectangle"
-      }
-    ] */
     ee.Geometry.Polygon(
         [[[92.10690997753609, 21.178041708074392],
           [92.10690997753609, 21.01981036555175],
@@ -511,7 +506,7 @@ Map.addLayer(compare_dii,{min:0,max:4,palette:['dadada','0400ff','ff0000','fbff0
 
 Export.image.toDrive({
   image: compare_dii,
-  description: 'compare_dii_10',
+  description: 'compare_dii_bangladesh',
   scale: 10,
   region: bounds,
   maxPixels: 1e12
@@ -542,7 +537,7 @@ var num_dii_pixels = dii_pixels.reduceRegion({
 print("num_dii_pixels", num_dii_pixels);
 
 var diiAndmndwi_pixels = diff_flood_RemCloud.updateMask(mndwi_flood);
-Map.addLayer(diiAndmndwi_pixels,{},'diiAndmndwi_pixels', 1);
+Map.addLayer(diiAndmndwi_pixels,{},'diiAndmndwi_pixels', 0);
 var num_diiAndmndwi_pixels = diiAndmndwi_pixels.reduceRegion({
   reducer: ee.Reducer.sum(),              
   geometry: bounds,
