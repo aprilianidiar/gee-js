@@ -128,7 +128,7 @@ print(gifVis);
 var gifParams = {
   'region': geometry,
   'dimensions': 600,
-  'framesPerSecond': 1
+  'framesPerSecond': 3
 };
 
 print(gifVis.getVideoThumbURL(gifParams));
