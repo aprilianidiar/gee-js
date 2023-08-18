@@ -2,5 +2,11 @@
 var S1 = ee.ImageCollection("COPERNICUS/S1_GRD"),
     geometry = /* color: #d63000 */ee.Geometry.Point([100.58207224393509, 14.048846940620747]);
 /***** End of imports. If edited, may not auto-convert in the playground. *****/
-var radar = ee.ImageCollection('COPERNICUS/S1_GRD')
-              .filterDate
+var firstImage = ee.ImageCollection('COPERNICUS/S1_GRD')
+              .filterDate('2021-09-01', '2021-10-31')
+              .first
+;
+var visParams = {band: 'VH'}
+
+Map.addLayer(firstImage, visParams, "First Image")
+Map.centerObject(geometry, 10)
