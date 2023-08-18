@@ -82,6 +82,7 @@ var comp = joinCol.map(function(img) {
 // Add Text
 var text = require('users/gena/packages:text')
 
+
 // Generate GIF
 var gifVis = comp.map(function(img) {
   return img.visualize(visParams);
