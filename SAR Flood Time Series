@@ -3,7 +3,52 @@ var S1 = ee.ImageCollection("COPERNICUS/S1_GRD"),
     geometry = 
     /* color: #d63000 */
     /* shown: false */
-    ee.Geometry.Point([100.58207224393509, 14.048846940620747]);
+    /* displayProperties: [
+      {
+        "type": "marker"
+      },
+      {
+        "type": "rectangle"
+      }
+    ] */
+    ee.Geometry({
+      "type": "GeometryCollection",
+      "geometries": [
+        {
+          "type": "Point",
+          "coordinates": [
+            100.58207224393509,
+            14.048846940620747
+          ]
+        },
+        {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                99.51368334973476,
+                14.769260425509373
+              ],
+              [
+                99.51368334973476,
+                13.38396331426771
+              ],
+              [
+                101.31544116223476,
+                13.38396331426771
+              ],
+              [
+                101.31544116223476,
+                14.769260425509373
+              ]
+            ]
+          ],
+          "geodesic": false,
+          "evenOdd": true
+        }
+      ],
+      "coordinates": []
+    });
 /***** End of imports. If edited, may not auto-convert in the playground. *****/
 var col = ee.ImageCollection('COPERNICUS/S1_GRD')
                     .filterDate('2021-09-01', '2021-10-31')
@@ -18,7 +63,6 @@ var col = ee.ImageCollection('COPERNICUS/S1_GRD')
 var visParams = {min: -29.264204107025904, max: -8.938093778644141}
 
 Map.addLayer(col, visParams, "First Image", 0);
-print('Image Number', S1);
 Map.centerObject(geometry, 8);
 
 col = col.map(function(img) {
@@ -28,7 +72,7 @@ col = col.map(function(img) {
 );
 
 var distictDOY = col.filterDate('2021-09-01', '2021-10-31');
-var filter = ee.Filter.equals({leftField: 'doy', rightfield: 'doy'});
+var filter = ee.Filter.equals({leftField: 'doy', rightField: 'doy'});
 var join = ee.Join.saveAll('doy_matches');
 var joinCol = ee.ImageCollection(join.apply(distictDOY, col, filter));
 
@@ -39,12 +83,15 @@ var comp = joinCol.map(function(img) {
     return doyCol.reduce(ee.Reducer.median());
 });
 
+var gifVis = comp.map(function(img) {
+  return img.visualize(visParams);
+});
+
 var gifParams = {
   'region': geometry,
   'dimensions': 600,
-  'crs': 'EPSG:3857',
   'framesPerSecond': 10
 };
 
-print(.getVideoThumbURL(gifParams));
-print(ui.Thumbnail(visParams, gifParams));
+print(gifVis.getVideoThumbURL(gifParams));
+print(ui.Thumbnail(gifVis, gifParams));
