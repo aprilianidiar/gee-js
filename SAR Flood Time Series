@@ -39,3 +39,12 @@ var comp = joinCol.map(function(img) {
     return doyCol.reduce(ee.Reducer.median());
 });
 
+var gifParams = {
+  'region': geometry,
+  'dimensions': 600,
+  'crs': 'EPSG:3857',
+  'framesPerSecond': 10
+};
+
+print(.getVideoThumbURL(gifParams));
+print(ui.Thumbnail(visParams, gifParams));
