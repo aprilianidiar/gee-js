@@ -2,7 +2,6 @@
 var S1 = ee.ImageCollection("COPERNICUS/S1_GRD"),
     geometry = 
     /* color: #d63000 */
-    /* shown: false */
     /* displayProperties: [
       {
         "type": "marker"
@@ -82,6 +81,10 @@ var comp = joinCol.map(function(img) {
 // Add Text
 var text = require('users/gena/packages:text')
 
+var label = 'year'
+var scale = 19567;
+var geometryLabel = ee.Geometry.Point([100.58207224393509,14.048846940620747]);
+var text = text.draw(label, geometryLabel, scale, {fontSize: 32});
 
 // Generate GIF
 var gifVis = comp.map(function(img) {
