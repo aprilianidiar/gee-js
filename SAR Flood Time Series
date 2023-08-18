@@ -6,6 +6,7 @@ var firstImage = ee.ImageCollection('COPERNICUS/S1_GRD')
               .filterDate('2021-09-01', '2021-10-31')
               .first
 ;
+
 var visParams = {band: 'VH'}
 
 Map.addLayer(firstImage, visParams, "First Image")
