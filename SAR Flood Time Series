@@ -62,9 +62,6 @@ var col = ee.ImageCollection('COPERNICUS/S1_GRD')
 
 var visParams = {min: -29.264204107025904, max: -8.938093778644141}
 
-Map.addLayer(col, visParams, "First Image", 0);
-Map.centerObject(geometry, 8);
-
 col = col.map(function(img) {
   var doy = ee.Date(img.get('system:time_start')).getRelative('day', 'year');
   return img.set('doy', doy);
