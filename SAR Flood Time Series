@@ -9,7 +9,7 @@ var firstImage = ee.ImageCollection('COPERNICUS/S1_GRD')
                     .filter(ee.Filter.eq('orbitProperties_pass', 'ASCENDING')) 
                     .filter(ee.Filter.eq('resolution_meters', 10))
                     .filterBounds(geometry)
-                    .select('VH');
+                    .select('VH')
 ;
 
 var visParams = {min: -29.264204107025904, max: -8.938093778644141}
