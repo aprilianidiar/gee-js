@@ -80,7 +80,7 @@ var comp = joinCol.map(function(img) {
 
 // Add Text
 var text = require('users/gena/packages:text')
-var labels = ee.List.sequence(distictDOY);
+var labels = ee.List.sequence(0,1);
 var label = 'year'
 var scale = 19567;
 var geometryLabel = ee.Geometry.Point([100.58207224393509,14.048846940620747]);
