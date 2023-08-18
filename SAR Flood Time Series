@@ -7,7 +7,7 @@ var firstImage = ee.ImageCollection('COPERNICUS/S1_GRD')
               .first
 ;
 
-var visParams = {band: 'VH'}
+var visParams = {band: 'VH'};
 
-Map.addLayer(firstImage, visParams, "First Image")
-Map.centerObject(geometry, 10)
+Map.addLayer(firstImage, visParams, "First Image");
+Map.centerObject(geometry, 10);
