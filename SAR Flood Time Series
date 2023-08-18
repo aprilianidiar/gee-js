@@ -2,6 +2,7 @@
 var S1 = ee.ImageCollection("COPERNICUS/S1_GRD"),
     geometry = 
     /* color: #d63000 */
+    /* shown: false */
     /* displayProperties: [
       {
         "type": "marker"
@@ -48,7 +49,10 @@ var S1 = ee.ImageCollection("COPERNICUS/S1_GRD"),
       ],
       "coordinates": []
     }),
-    geomLabel = /* color: #98ff00 */ee.Geometry.Point([100.41466229941474, 13.495534584596204]);
+    geomLabel = 
+    /* color: #98ff00 */
+    /* shown: false */
+    ee.Geometry.Point([100.41466229941474, 13.495534584596204]);
 /***** End of imports. If edited, may not auto-convert in the playground. *****/
 var col = ee.ImageCollection('COPERNICUS/S1_GRD')
                     .filter(ee.Filter.eq('instrumentMode', 'IW'))
