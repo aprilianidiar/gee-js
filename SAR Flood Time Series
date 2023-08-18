@@ -1,3 +1,6 @@
 /**** Start of imports. If edited, may not auto-convert in the playground. ****/
-var imageCollection = ee.ImageCollection("COPERNICUS/S1_GRD");
+var S1 = ee.ImageCollection("COPERNICUS/S1_GRD"),
+    geometry = /* color: #d63000 */ee.Geometry.Point([100.58207224393509, 14.048846940620747]);
 /***** End of imports. If edited, may not auto-convert in the playground. *****/
+var radar = ee.ImageCollection('COPERNICUS/S1_GRD')
+              .filterDate
