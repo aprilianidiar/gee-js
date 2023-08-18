@@ -5,7 +5,7 @@ var S1 = ee.ImageCollection("COPERNICUS/S1_GRD"),
     /* shown: false */
     ee.Geometry.Point([100.58207224393509, 14.048846940620747]);
 /***** End of imports. If edited, may not auto-convert in the playground. *****/
-var S1 = ee.ImageCollection('COPERNICUS/S1_GRD')
+var col = ee.ImageCollection('COPERNICUS/S1_GRD')
                     .filterDate('2021-09-01', '2021-10-31')
                     .filter(ee.Filter.eq('instrumentMode', 'IW'))
                     .filter(ee.Filter.listContains('transmitterReceiverPolarisation', 'VH'))
@@ -17,7 +17,25 @@ var S1 = ee.ImageCollection('COPERNICUS/S1_GRD')
 
 var visParams = {min: -29.264204107025904, max: -8.938093778644141}
 
-Map.addLayer(S1, visParams, "First Image", 0);
+Map.addLayer(col, visParams, "First Image", 0);
 print('Image Number', S1);
 Map.centerObject(geometry, 8);
+
+col = col.map(function(img) {
+  var doy = ee.Date(img.get('system:time_start')).getRelative('day', 'year');
+  return img.set('doy', doy);
+}
+);
+
+var distictDOY = col.filterDate('2021-09-01', '2021-10-31');
+var filter = ee.Filter.equals({leftField: 'doy', rightfield: 'doy'});
+var join = ee.Join.saveAll('doy_matches');
+var joinCol = ee.ImageCollection(join.apply(distictDOY, col, filter));
+
+var comp = joinCol.map(function(img) {
+  var doyCol = ee.ImageCollection.fromImages(
+    img.get('doy_matches')
+    );
+    return doyCol.reduce(ee.Reducer.median());
+});
 
