@@ -61,7 +61,7 @@ var col = ee.ImageCollection('COPERNICUS/S1_GRD')
 var visParams = {min: -29.264204107025904, max: -8.938093778644141}
 
 col = col.map(function(img) {
-  var doy = ee.Date(img.get('system:time_start')).getRelative('month', 'year');
+  var doy = ee.Date(img.get('system:time_start')).getRelative('day', 'month');
   return img.set('doy', doy);
 }
 );
@@ -80,7 +80,7 @@ var comp = joinCol.map(function(img) {
 
 // Add Text
 var text = require('users/gena/packages:text')
-
+var labels = ee.List.sequence(distictDOY);
 var label = 'year'
 var scale = 19567;
 var geometryLabel = ee.Geometry.Point([100.58207224393509,14.048846940620747]);
