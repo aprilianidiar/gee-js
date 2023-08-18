@@ -2,7 +2,6 @@
 var S1 = ee.ImageCollection("COPERNICUS/S1_GRD"),
     geometry = 
     /* color: #d63000 */
-    /* shown: false */
     /* displayProperties: [
       {
         "type": "marker"
@@ -49,10 +48,7 @@ var S1 = ee.ImageCollection("COPERNICUS/S1_GRD"),
       ],
       "coordinates": []
     }),
-    geomLabel = 
-    /* color: #98ff00 */
-    /* shown: false */
-    ee.Geometry.Point([100.50804608847724, 13.53826265594674]);
+    geomLabel = /* color: #98ff00 */ee.Geometry.Point([100.41466229941474, 13.495534584596204]);
 /***** End of imports. If edited, may not auto-convert in the playground. *****/
 var col = ee.ImageCollection('COPERNICUS/S1_GRD')
                     .filter(ee.Filter.eq('instrumentMode', 'IW'))
@@ -63,40 +59,39 @@ var col = ee.ImageCollection('COPERNICUS/S1_GRD')
                     .select('VH')
 ;
 
-
-var years = ee.List.sequence(2021,2022,1);
-var months = ee.List.sequence(9,12,1);
-
-col = col.map(function(img) {
-  var doy = ee.Date(img.get('system:time_start')).getRelative('month', 'year');
-  return img.set('doy', doy);
-}
-);
-
-var distictDOY = col.filterDate('2021-09-01', '2022-01-31');
-var filter = ee.Filter.equals({leftField: 'doy', rightField: 'doy'});
-var join = ee.Join.saveAll('doy_matches');
-var joinCol = ee.ImageCollection(join.apply(distictDOY, col, filter));
-
-var comp = joinCol.map(function(img) {
-  var doyCol = ee.ImageCollection.fromImages(
-    img.get('doy_matches')
-    );
-    return doyCol.reduce(ee.Reducer.median());
-});
-
-// var col =  ee.ImageCollection.fromImages(
-//   years.map(function (y) {
-//     return months.map(function(m){
-//       var start = ee.Date('2021-09-01');
-//       var end = ee.Date('2022-01-31');
-//       var w = col.filterDate(start,end).max();    
-                    
-//       return w.set('year', y)
-//               .set('month', m)
-//               .set('system:time_start',start);
-//   })}).flatten()
+// col = col.map(function(img) {
+//   var doy = ee.Date(img.get('system:time_start')).getRelative('month', 'year');
+//   return img.set('doy', doy);
+// }
 // );
+
+// var distictDOY = col.filterDate('2021-09-01', '2022-01-31');
+// var filter = ee.Filter.equals({leftField: 'doy', rightField: 'doy'});
+// var join = ee.Join.saveAll('doy_matches');
+// var joinCol = ee.ImageCollection(join.apply(distictDOY, col, filter));
+
+// var comp = joinCol.map(function(img) {
+//   var doyCol = ee.ImageCollection.fromImages(
+//     img.get('doy_matches')
+//     );
+//     return doyCol.reduce(ee.Reducer.median());
+// });
+
+var years = ee.List.sequence(2021, 2022, 1);
+var months = ee.List.sequence(9,12,1,4);
+
+var col =  ee.ImageCollection.fromImages(
+  years.map(function (y) {
+    return months.map(function(m){
+      var start = ee.Date.fromYMD(y,m,1).advance(-1,"month");
+      var end = ee.Date.fromYMD(y,m,1).advance(1,"month");
+      var w = col.filterDate(start,end).max();    
+                    
+      return w.set('year', y)
+              .set('month', m)
+              .set('system:time_start',start);
+  })}).flatten()
+);
 
 var visParams = {min: -29.264204107025904, max: -8.938093778644141}
 
@@ -115,12 +110,15 @@ var label = 'VH'
 var scale = Map.getScale() * 1;
 var geometryLabel = geomLabel;
 
+// var gifVis = comp.map(function(img) {
+//   return img.visualize(visParams).clip(geometry);
+// });
 
-var gifVis = comp.map(function(img) {
+var gifVis = col.map(function(img) {
   var y = ee.Number(img.get("year")).toInt()
   var m = ee.Number(img.get("month")).toInt()
   var label = ee.String(y).cat("-").cat(m)
-  var text = txt.draw(label, geometryLabel, scale, {fontSize: 12});
+  var text = txt.draw(label, geometryLabel, scale, {fontSize: 32});
   return img.visualize(visParams).clip(geometry).blend(text);
 });
 
