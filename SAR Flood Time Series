@@ -17,9 +17,7 @@ var S1 = ee.ImageCollection('COPERNICUS/S1_GRD')
 
 var visParams = {min: -29.264204107025904, max: -8.938093778644141}
 
-Map.addLayer(S1, visParams, "First Image");
+Map.addLayer(S1, visParams, "First Image", 0);
 print('Image Number', S1);
 Map.centerObject(geometry, 8);
 
-var image = S1.toBands()
-Map.addLayer(image, {}, "Time Series")
