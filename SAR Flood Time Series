@@ -21,3 +21,5 @@ Map.addLayer(S1, visParams, "First Image");
 print('Image Number', S1);
 Map.centerObject(geometry, 8);
 
+var image = S1.toBands()
+Map.addLayer(image, {}, "Time Series")
