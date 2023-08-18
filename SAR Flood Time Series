@@ -51,7 +51,6 @@ var S1 = ee.ImageCollection("COPERNICUS/S1_GRD"),
     });
 /***** End of imports. If edited, may not auto-convert in the playground. *****/
 var col = ee.ImageCollection('COPERNICUS/S1_GRD')
-                    .filterDate('2021-09-01', '2021-10-31')
                     .filter(ee.Filter.eq('instrumentMode', 'IW'))
                     .filter(ee.Filter.listContains('transmitterReceiverPolarisation', 'VH'))
                     .filter(ee.Filter.eq('orbitProperties_pass', 'DESCENDING')) 
@@ -63,12 +62,12 @@ var col = ee.ImageCollection('COPERNICUS/S1_GRD')
 var visParams = {min: -29.264204107025904, max: -8.938093778644141}
 
 col = col.map(function(img) {
-  var doy = ee.Date(img.get('system:time_start')).getRelative('day', 'year');
+  var doy = ee.Date(img.get('system:time_start')).getRelative('month', 'year');
   return img.set('doy', doy);
 }
 );
 
-var distictDOY = col.filterDate('2021-09-01', '2021-10-31');
+var distictDOY = col.filterDate('2021-09-01', '2022-01-31');
 var filter = ee.Filter.equals({leftField: 'doy', rightField: 'doy'});
 var join = ee.Join.saveAll('doy_matches');
 var joinCol = ee.ImageCollection(join.apply(distictDOY, col, filter));
