@@ -77,7 +77,7 @@ var col = ee.ImageCollection('COPERNICUS/S1_GRD')
 //     return doyCol.reduce(ee.Reducer.median());
 // });
 
-var days = ee.List.sequence(2,30,12);
+// var days = ee.List.sequence(2,30,12);
 var years = ee.List.sequence(2021, 2022, 1);
 var months = ee.List.sequence(9,12,1,4);
 
