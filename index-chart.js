@@ -1,3 +1,13 @@
+// add region (polygon) and sample (point)
+var region = ee.Geometry.Polygon([
+  [103.79747674876988,12.760742803224648],
+  [104.37975213939488,12.760742803224648],
+  [104.37975213939488,13.253145809333176],
+  [103.79747674876988,13.253145809333176],
+  [103.79747674876988,12.760742803224648]
+  ])
+var sample = ee.Geometry.Point([104.1064687734023,12.922597032067433])
+
 // call the dataset as the Image Collection in 1 month to 1 year
 var S2 = ee.ImageCollection("COPERNICUS/S2_SR")
   .filterBounds (region)
@@ -71,7 +81,7 @@ var S2_clip = S2_clip.select('ndvi', 'ndwi', 'pi'); //select the particular band
 var chart = ui.Chart.image
   .doySeries ({
   imageCollection: S2_clip,
-  region: samples,
+  region: sample,
   regionReducer: ee.Reducer.mean(),
   scale: 15,
   yearReducer: ee.Reducer.mean(),
